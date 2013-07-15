@@ -6,7 +6,7 @@ use Zenith\WSDL\WSDLService;
 
 class MainController {
 	/**
-	 * Handles a request
+	 * Handles upcoming request
 	 * @throws \RuntimeException
 	 * @throws \RuntimeConfiguration
 	 */

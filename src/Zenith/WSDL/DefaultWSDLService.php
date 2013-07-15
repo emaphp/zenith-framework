@@ -27,17 +27,10 @@ class DefaultWSDLService extends WSDLService {
 			$template_params = $config['template_params'];
 		}
 		else {
-			//obtain service uri from main configuration
-			$config = $app->load_config('app');
-			
-			if (!array_key_exists('uri', $config) || !is_string($config['uri']) || empty($config['uri'])) {
-				throw new \RuntimeException("No service URI specified");
-			}
-			
-			//build default parameter list
-			$template_params = array('uri' => $config['uri']);
+			$template_params = null;
 		}
 
+		//generate wsdl
 		return $this->view->render($template, $template_params);
 	}
 } 

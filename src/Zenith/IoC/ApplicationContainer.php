@@ -50,7 +50,9 @@ class ApplicationContainer extends Container {
 		$app_event = $inject['event'];
 		
 		$this['event'] = $this->share(function ($c) use ($app_event) {
-			return new $app_event($c['logger']);		
+			$event_handler = new $app_event;
+			$event_handler->setEventLogger($c['logger']);
+			return $event_handler;		
 		});
 		
 		//obtain event handler
@@ -73,7 +75,7 @@ class ApplicationContainer extends Container {
 			$value = current($inject);
 			
 			if (!is_string($property) || empty($property)) {
-				throw new \RuntimeException("Injected property not valid");
+				throw new \RuntimeException("Injected property is not valid");
 			}
 			
 			//generate object from class name

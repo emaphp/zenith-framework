@@ -35,7 +35,12 @@ class EventManager implements IEventHandler {
 	 */
 	public $logger;
 	
-	public function __construct(Logger $logger) {
+	/**
+	 * Sets event logger
+	 * (non-PHPdoc)
+	 * @see \Zenith\Event\IEventHandler::setEventLogger()
+	 */
+	public function setEventLogger(Logger $logger) {
 		$this->logger = $logger;
 	}
 	
@@ -99,6 +104,8 @@ class EventManager implements IEventHandler {
 		if (!array_key_exists($event, $this->events)) {
 			return false;
 		}
+		
+		$this->logger->addDebug("Event '$event' triggered...");
 		
 		foreach ($this->events[$event] as $c) {
 			$c->__invoke();
