@@ -1,0 +1,11 @@
+{
+	"name": "zenith/zenith",
+	"description": "The PHP-SOAP Framework",
+	"keywords": ["framework", "soap", "zenith"],
+    "require": {
+    	"ext-soap": "*",
+        "monolog/monolog": "1.2.*",
+        "twig/twig": "1.13.*",
+        "injector/injector": "1.0.*"
+    }
+}
