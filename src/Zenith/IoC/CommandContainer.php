@@ -4,7 +4,7 @@ namespace Zenith\IoC;
 use Zenith\Application;
 use Zenith\View\View;
 
-class ServiceContainer extends Container {
+class CommandContainer extends Container {
 	public function configure() {
 		//load configuration
 		$config = Application::getInstance()->load_config('app');

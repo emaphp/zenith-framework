@@ -16,37 +16,23 @@ class MainController {
 		
 		//check if request tries to obtain WSDL
 		if (array_key_exists('wsdl', $_GET)) {
-			//load WSDL configuration
-			$wsdl_config = $app->load_config('wsdl');
-			
-			if (is_null($wsdl_config) || !is_array($wsdl_config)) {
-				throw new \RuntimeException("No WSDL configuration found");
+			$config = $app->load_config('server');
+		
+			if (is_null($config) || !is_array($config)) {
+				throw new \RuntimeException("No server configuration found");
 			}
 			
-			if (!array_key_exists('service', $wsdl_config) || !is_string($wsdl_config['service']) || empty($wsdl_config['service'])) {
-				throw new \RuntimeException("No WSDL service found");
+			if (!array_key_exists('wsdl', $config) || !is_string($config['wsdl']) || empty($config['wsdl'])) {
+				throw new \RuntimeException("No WSDL file defined");
 			}
 			
-			//generate wsdl service
-			$service = new $wsdl_config['service']();
+			$wsdl = $config['wsdl'];
 			
-			if (!($service instanceof WSDLService)) {
-				throw new \RuntimeException("WSDL service not valid");
+			if (!file_exists($wsdl)) {
+				throw new \RuntimeException("WSDL file not found");
 			}
 			
-			//generate container
-			$container_class = $service->container;
-			$container = new $container_class;
-			$container->configure();
-			
-			//inject dependencies
-			$container->injectAll($service);
-			
-			//run service
-			$wsdl = $service->render();
-			
-			//print wsdl
-			echo $wsdl;
+			readfile($wsdl);
 			return;
 		}
 		

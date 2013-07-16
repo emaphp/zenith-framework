@@ -6,6 +6,7 @@
     	"ext-soap": "*",
         "monolog/monolog": "1.2.*",
         "twig/twig": "1.13.*",
-        "injector/injector": "1.0.*"
+        "injector/injector": "1.0.*",
+        "symfony/console": "2.3.*"
     }
 }

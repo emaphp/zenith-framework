@@ -1,7 +1,7 @@
 <?php
 namespace Zenith\View;
 
-class GenericView {
+class PHPEngine {
 	protected $dir;
 	
 	public function __construct($views_dir) {

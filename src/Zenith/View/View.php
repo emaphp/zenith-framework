@@ -1,9 +1,9 @@
 <?php
 namespace Zenith\View;
 
-use Zenith\View\GenericView;
+use Zenith\View\PHPEngine;
 
-class ViewManager {
+class View {
 	/**
 	 * Supported extension (extension => engine)
 	 * @var array
@@ -12,8 +12,8 @@ class ViewManager {
 	
 	public function __construct($twig_config) {
 		//template engines
-		$this->engines = array('default' => new GenericView(VIEWS_DIR),
-							   'twig' => new \Twig_Environment(new \Twig_Loader_Filesystem(VIEWS_DIR), $twig_config));
+		$this->engines = array('default' => new PHPEngine(VIEWS_DIR),
+							   'twig'    => new \Twig_Environment(new \Twig_Loader_Filesystem(VIEWS_DIR), $twig_config));
 	}
 	
 	/**
