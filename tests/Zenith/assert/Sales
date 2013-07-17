@@ -1,0 +1,15 @@
+<?php
+namespace Acme\Company;
+
+use Zenith\Service;
+use Zenith\SOAP\Request;
+use Zenith\SOAP\Response;
+
+class Sales extends Service {
+	public function getTotal(Request $request, Response $response) {
+	}
+
+	public function getItem(Request $request, Response $response) {
+	}
+}
+?>

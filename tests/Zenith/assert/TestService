@@ -1,0 +1,7 @@
+<?php
+
+use Zenith\Service;
+
+class TestService extends Service {
+}
+?>

@@ -44,7 +44,7 @@ class View {
 				
 		//check if extension is especified
 		$filename = basename($view);
-		$regex = '(.*)\.(' . implode('|', array_keys($this->extensions)) . ')$';
+		$regex = '/(.*)\.(' . implode('|', array_keys($this->extensions)) . ')$/';
 		
 		if (preg_match($regex, $filename, $matches)) {
 			$engine = $matches[2];
@@ -59,7 +59,7 @@ class View {
 		//try appending all possible extensions to view
 		foreach ($this->view_list($view) as $engine => $file) {
 			if (file_exists(VIEWS_DIR . $file)) {
-				return $this->engines[$engine]->render($view, $params);
+				return $this->engines[$engine]->render($file, $params);
 			}
 		}
 		

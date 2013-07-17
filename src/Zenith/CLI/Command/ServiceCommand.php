@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class ServiceCommand extends BleachCommand {
-	protected $validation_regex = '/^[A-z|_]{1}[\w]*$/';
+	public static $validation_regex = '/^[A-z|_]{1}[\w]*$/';
 	
 	protected function configure() {
 		$this->setName('service')
@@ -23,7 +23,7 @@ class ServiceCommand extends BleachCommand {
 	 * @param number $mode
 	 * @return boolean
 	 */
-	protected function make_directory($path, $mode = 0777) {
+	public function make_directory($path, $mode = 0777) {
 		$dirs = explode(DIRECTORY_SEPARATOR , $path);
 		$count = count($dirs);
 		$path = '.';
@@ -55,7 +55,7 @@ class ServiceCommand extends BleachCommand {
 		
 		//validate namespace/class name
 		foreach ($route as $route_part) {
-			if (!preg_match($this->validation_regex, $route_part)) {
+			if (!preg_match(self::$validation_regex, $route_part)) {
 				$output->writeln("<error>'$route_part' is not a valid namespace/class name</error>");
 				return;
 			}
@@ -65,7 +65,7 @@ class ServiceCommand extends BleachCommand {
 		
 		//validate methods
 		foreach ($methods as $method) {
-			if (!preg_match($this->validation_regex, $method)) {
+			if (!preg_match(self::$validation_regex, $method)) {
 				$output->writeln("<error>'$method' is not a valid method name</error>");
 				return;
 			}

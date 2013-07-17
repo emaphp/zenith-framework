@@ -1,0 +1,12 @@
+<?php
+namespace Greetings;
+
+use Zenith\Service;
+use Zenith\SOAP\Request;
+use Zenith\SOAP\Response;
+
+class HelloWorld extends Service {
+	public function helloWorld(Request $request, Response $response) {
+	}
+}
+?>

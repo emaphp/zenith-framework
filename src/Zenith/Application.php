@@ -9,6 +9,12 @@ class Application {
 	public $config = array();
 	
 	/**
+	 * Application environment
+	 * @var string
+	 */
+	public $environment;
+	
+	/**
 	 * Class instance
 	 * @var Zenith\Application
 	 */
@@ -54,19 +60,21 @@ class Application {
 		}
 		
 		if ($environment !== false) {
-			$environment = is_null($environment) ? $this->environment : $environment;
+			$environment = is_null($environment) ? is_null($this->environment) ? null : $this->environment : $environment;
 			
-			//include environment file
-			$env_filename = CONFIG_DIR . "/$environment/$name.php";
-			
-			if (file_exists($env_filename)) {
-				include $env_filename;
+			if (!is_null($environment)) {
+				//include environment file
+				$env_filename = CONFIG_DIR . "/$environment/$name.php";
 					
-				if (!is_null($app_config)) {
-					$app_config = array_merge($app_config, $config);
-				}
-				else {
-					$app_config = $config;
+				if (file_exists($env_filename)) {
+					include $env_filename;
+						
+					if (!is_null($app_config)) {
+						$app_config = array_merge($app_config, $config);
+					}
+					else {
+						$app_config = $config;
+					}
 				}
 			}
 		}

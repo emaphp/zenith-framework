@@ -1,24 +1,36 @@
 <?php
-//$loader = require __DIR__ . "/../vendor/autoload.php";
-//$loader->add('Zenith\\', __DIR__ . '/../src/');
+/**
+ * Load composer autoloader
+ */
+$loader = require __DIR__ . "/../vendor/autoload.php";
+$loader->add('Zenith\\', __DIR__ . '/../src/');
 
-//application root directory
-define('ROOT_DIR', __DIR__ . '/Zenith');
+/**
+ * Directories
+ */
+//root directory
+define('ROOT_DIR', __DIR__ . '/Zenith/');
+
+//application directory
+define('APP_DIR', ROOT_DIR . 'app/');
+
+//store directory
+define('STORE_DIR', ROOT_DIR . 'store/');
 
 //services directory
-define('SERVICES_DIR',  ROOT_DIR . '/app/services/');
+define('SERVICES_DIR', APP_DIR . 'services/');
 
 //configuration directory
-define('CONFIG_DIR',    ROOT_DIR . '/app/config/');
+define('CONFIG_DIR', APP_DIR . 'config/');
 
 //views directory
-define('VIEWS_DIR',     ROOT_DIR . '/app/views/');
+define('VIEWS_DIR', APP_DIR . 'views/');
 
-//cache directory
-define('CACHE_DIR',     ROOT_DIR . '/store/cache/');
+//application WSDL directory
+define('WSDL_DIR', STORE_DIR . 'wsdl/');
 
-//cached templates directory
-define('TPL_CACHE_DIR', ROOT_DIR . '/store/tpl');
+//compiled templates directory
+define('TWIG_DIR', STORE_DIR . 'twig');
 
 //logs directory
-define('LOGS_DIR',      ROOT_DIR . '/store/logs/');
+define('LOGS_DIR', STORE_DIR . 'logs/');
