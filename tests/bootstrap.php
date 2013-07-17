@@ -1,9 +1,9 @@
 <?php
-$loader = require __DIR__ . "/../vendor/autoload.php";
-$loader->add('Zenith\\', __DIR__ . '/../src/');
+//$loader = require __DIR__ . "/../vendor/autoload.php";
+//$loader->add('Zenith\\', __DIR__ . '/../src/');
 
 //application root directory
-define(ROOT_DIR, __DIR__ . '/Zenith');
+define('ROOT_DIR', __DIR__ . '/Zenith');
 
 //services directory
 define('SERVICES_DIR',  ROOT_DIR . '/app/services/');

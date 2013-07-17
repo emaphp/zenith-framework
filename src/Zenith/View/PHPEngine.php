@@ -2,6 +2,10 @@
 namespace Zenith\View;
 
 class PHPEngine {
+	/**
+	 * Views directory
+	 * @var string
+	 */
 	protected $dir;
 	
 	public function __construct($views_dir) {
@@ -15,9 +19,9 @@ class PHPEngine {
 	 * @return string
 	 */
 	public function render($view, $args = null) {
-		if (!preg_match('^/', $view)) {
-			$view = $this->dir . $view;
-		}
+		//remove separators
+		$explode = explode(DIRECTORY_SEPARATOR, $view);
+		$view = $this->dir . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $explode);
 		
 		if (!file_exists($view)) {
 			throw new \InvalidArgumentException("View '$view' does not exists");

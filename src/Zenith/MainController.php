@@ -16,6 +16,7 @@ class MainController {
 		
 		//check if request tries to obtain WSDL
 		if (array_key_exists('wsdl', $_GET)) {
+			//load server configuration
 			$config = $app->load_config('server');
 		
 			if (is_null($config) || !is_array($config)) {

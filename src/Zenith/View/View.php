@@ -10,10 +10,10 @@ class View {
 	 */
 	public $extensions = array('php' => 'default', 'twig' => 'twig');
 	
-	public function __construct($twig_config) {
+	public function __construct($views_dir, $twig_config) {
 		//template engines
-		$this->engines = array('default' => new PHPEngine(VIEWS_DIR),
-							   'twig'    => new \Twig_Environment(new \Twig_Loader_Filesystem(VIEWS_DIR), $twig_config));
+		$this->engines = array('default' => new PHPEngine($views_dir),
+							   'twig'    => new \Twig_Environment(new \Twig_Loader_Filesystem($views_dir), $twig_config));
 	}
 	
 	/**

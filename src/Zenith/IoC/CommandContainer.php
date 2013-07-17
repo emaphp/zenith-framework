@@ -11,7 +11,7 @@ class CommandContainer extends Container {
 		$twig_config = array_key_exists('twig', $config) && is_array($config['twig']) ? $config['twig'] : array();
 		
 		$this['view'] = function ($c) use ($twig_config) {
-			return new View($twig_config);
+			return new View(VIEWS_DIR, $twig_config);
 		};
 	}
 }
