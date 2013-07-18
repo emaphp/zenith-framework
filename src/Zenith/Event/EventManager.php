@@ -105,10 +105,8 @@ class EventManager implements IEventHandler {
 			return false;
 		}
 		
-		$this->logger->addDebug("Event '$event' triggered...");
-		
 		foreach ($this->events[$event] as $c) {
-			$c->__invoke();
+			$c->__invoke($event, $this);
 		}
 		
 		return true;
