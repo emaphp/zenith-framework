@@ -1,5 +1,5 @@
 <?php
-namespace Zenith\View;
+namespace Zenith\View\Engine;
 
 class PHPEngine {
 	/**
@@ -34,7 +34,7 @@ class PHPEngine {
 		ob_start();
 		//buidl content
 		extract($args);
-		include $filename;
+		include $view;
 		$content = ob_get_clean();
 		return $content;
 	}

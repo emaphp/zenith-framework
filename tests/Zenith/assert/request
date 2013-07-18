@@ -1,0 +1,4 @@
+<request>
+	<service>Acme\HelloWorld</service>
+	<method>sayHi</method>
+</request>

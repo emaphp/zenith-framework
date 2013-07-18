@@ -1,9 +1,15 @@
 <?php
 namespace Zenith\View;
 
-use Zenith\View\PHPEngine;
+use Zenith\View\Engine\PHPEngine;
 
 class View {
+	/**
+	 * Template engines
+	 * @var array
+	 */
+	public $engines;
+	
 	/**
 	 * Supported extension (extension => engine)
 	 * @var array
@@ -47,7 +53,13 @@ class View {
 		$regex = '/(.*)\.(' . implode('|', array_keys($this->extensions)) . ')$/';
 		
 		if (preg_match($regex, $filename, $matches)) {
-			$engine = $matches[2];
+			$extension = $matches[2];
+			
+			if (!array_key_exists($extension, $this->extensions)) {
+				throw new \RuntimeException("No suitable engine found for extension '$engine'");
+			}
+			
+			$engine = $this->extensions[$extension];
 			
 			if (!file_exists(VIEWS_DIR . $filename)) {
 				throw new \InvalidArgumentException("View '$view' does not exists");
