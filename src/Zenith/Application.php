@@ -37,6 +37,26 @@ class Application {
 	}
 
 	/**
+	 * Clears all configuration values associated to a configuration filename
+	 * If no name is specified then all values are deleted
+	 * @param string $name
+	 * @return bool
+	 */
+	public function clear_config($name = null) {
+		if (is_null($name)) {
+			$this->config = array();
+		}
+		elseif (array_key_exists($name, $this->config)) {
+			unset($this->config[$name]);
+		}
+		else {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	/**
 	 * Loads a configuration array and stores its values
 	 * @param string $name
 	 * @param string $environment
@@ -60,7 +80,7 @@ class Application {
 		}
 		
 		if ($environment !== false) {
-			$environment = is_null($environment) ? is_null($this->environment) ? null : $this->environment : $environment;
+			$environment = is_null($environment) ? (is_null($this->environment) ? null : $this->environment) : $environment;
 			
 			if (!is_null($environment)) {
 				//include environment file

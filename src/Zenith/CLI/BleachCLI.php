@@ -4,32 +4,28 @@ namespace Zenith\CLI;
 use Symfony\Component\Console\Application;
 
 class BleachCLI extends Application {
-	public $cli_commands = array('Zenith\CLI\Command\GenerateWSDLCommand');
-	
-	public function __construct() {
-		parent::__construct();
+	//default commands
+	public $cli_commands = array('Zenith\CLI\Command\GenerateWSDLCommand',
+								 'Zenith\CLI\Command\ServiceCommand');
 		
-		//build commands
-		$commands = $this->build_cli_commands();
-		
-		foreach ($commands as $command) {
-			$this->add($command);
-		}
-	}
-	
-	protected function build_cli_commands() {
-		$commands = array();
-		
+	/**
+	 * Builds all CLI commands
+	 * @return array
+	 */
+	public function build_cli_commands() {
 		foreach ($this->cli_commands as $command) {
 			$cmd = new $command;
 			$container = $this->build_container($cmd->container);
 			$container->injectAll($cmd);
-			$commands[] = $cmd;
+			$this->add($cmd);
 		}
-		
-		return $commands;
 	}
 	
+	/**
+	 * Obtains a command container
+	 * @param string $class
+	 * @return Zenith\IoC\Container
+	 */
 	protected function build_container($class) {
 		static $containers = array();
 		
