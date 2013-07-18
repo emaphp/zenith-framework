@@ -1,4 +1,8 @@
 <?php
+/**
+ * Tests views generation through View class
+ * Author: Emmanuel Antico
+ */
 use Zenith\View\View;
 
 class ViewTest extends \PHPUnit_Framework_TestCase {

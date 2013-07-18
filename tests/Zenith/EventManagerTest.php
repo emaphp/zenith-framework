@@ -1,4 +1,8 @@
 <?php
+/**
+ * Test event creation and triggering through EventManager class
+ * Author: Emmanuel Antico
+ */
 use Zenith\Event\EventManager;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;

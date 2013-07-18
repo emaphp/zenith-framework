@@ -1,6 +1,7 @@
 <?php
 /**
  * Tests loading configuration values through the Zenith\Application class
+ * Author: Emmanuel Antico
  */
 use Zenith\Application;
 

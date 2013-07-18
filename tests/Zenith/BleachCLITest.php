@@ -1,4 +1,8 @@
 <?php
+/**
+ * Test CLI command construction through BleachCLI class
+ * Author: Emmanuel Antico
+ */
 use Zenith\CLI\BleachCLI;
 use Zenith\CLI\Command\BleachCommand;
 use Zenith\IoC\Container;
