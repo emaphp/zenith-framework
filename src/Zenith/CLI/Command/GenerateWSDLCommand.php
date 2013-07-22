@@ -62,13 +62,14 @@ class GenerateWSDLCommand extends BleachCommand {
 		$template_params = $wsdl_config['template_params'];
 		
 		$wsdl = $this->view->render($template, $template_params);
+		$output->writeln("<info>WDSL generated successfully!!!</info>");
 		
 		if (isset($path)) {
 			if (!file_put_contents($path, $wsdl)) {
-				$output->writeln("<error>Failed to store file in $path</error>");
+				$output->writeln("<error>Failed to store file in $path. Check folder permissions.</error>");
 			}
 			else {
-				$output->writeln("<info>File stored in $path successfully</info>");
+				$output->writeln("<info>Generated WSDL was stored in $path.</info>");
 			}
 		}
 		

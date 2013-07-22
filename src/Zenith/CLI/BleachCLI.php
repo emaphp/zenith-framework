@@ -31,6 +31,7 @@ class BleachCLI extends Application {
 		
 		if (!array_key_exists($class, $containers)) {
 			$containers[$class] = new $class;
+			$containers[$class]->configure();
 		}
 		
 		return $containers[$class];

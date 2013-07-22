@@ -70,23 +70,25 @@ class ApplicationContainer extends Container {
 		//additional dependencies
 		$inject = array_diff_key($inject, array_flip(array('logger', 'event')));
 		
-		do {
-			$property = key($inject);
-			$value = current($inject);
-			
-			if (!is_string($property) || empty($property)) {
-				throw new \RuntimeException("Injected property is not valid");
-			}
-			
-			//generate object from class name
-			if (is_string($value)) {
-				$this[$property] = function ($c) use ($value) {
-					return new $value;
-				};
-			}
-			else {
-				$this[$property] = $value;
-			}
-		} while (next($inject));
+		if (!empty($inject)) {
+			do {
+				$property = key($inject);
+				$value = current($inject);
+					
+				if (!is_string($property) || empty($property)) {
+					throw new \RuntimeException("Injected property is not valid");
+				}
+					
+				//generate object from class name
+				if (is_string($value)) {
+					$this[$property] = function ($c) use ($value) {
+						return new $value;
+					};
+				}
+				else {
+					$this[$property] = $value;
+				}
+			} while (next($inject));
+		}
 	}
 }
