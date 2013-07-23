@@ -54,6 +54,7 @@ class EventManager implements IEventHandler {
 	 */
 	public function error_handler($errno, $errstr, $errfile, $errline, $errcontext) {
 		$method = array_key_exists($errno, $this->error_methods) ? $this->error_methods[$errno] : 'addError';
+		$errstr = sprintf("%s on file %s (line %d)", $errstr, $errfile, $errline);
 		call_user_func(array($this->logger, $method), $errstr, $errcontext);
 	}
 	
@@ -74,7 +75,8 @@ class EventManager implements IEventHandler {
 		}
 		
 		$method = array_key_exists($err['type'], $this->error_methods) ? $this->error_methods[$errno] : 'addCritical';
-		call_user_func(array($this->logger, $method), $err['message']);
+		$errstr = sprintf("%s on file %s (line %d)", $err['message'], $err['file'], $err['line']);
+		call_user_func(array($this->logger, $method), $errstr);
 	}
 	
 	/**

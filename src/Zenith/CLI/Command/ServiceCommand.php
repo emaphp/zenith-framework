@@ -11,8 +11,8 @@ class ServiceCommand extends BleachCommand {
 	public static $validation_regex = '/^[A-z|_]{1}[\w]*$/';
 	
 	protected function configure() {
-		$this->setName('service')
-		->setDescription("Generates a service")
+		$this->setName('create-service')
+		->setDescription("Generates a new service")
 		->addArgument('class', InputArgument::REQUIRED)
 		->addArgument('methods', InputArgument::IS_ARRAY);
 	}
@@ -78,7 +78,7 @@ class ServiceCommand extends BleachCommand {
 			//generate namespace
 			$namespace = implode('\\', $route);
 			
-			$path = SERVICES_DIR . implode(DIRECTORY_SEPARATOR, $route);
+			$path = substr(str_replace(getcwd(), '', SERVICES_DIR), 1) . implode(DIRECTORY_SEPARATOR, $route);
 			
 			if (!$this->make_directory($path)) {
 				$output->writeln("<error>Failed to create directory $path</error>");

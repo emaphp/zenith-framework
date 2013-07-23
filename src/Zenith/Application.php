@@ -21,7 +21,6 @@ class Application {
 	protected static $instance = null;
 	
 	private function __construct() {
-		
 	}
 	
 	/**
