@@ -17,17 +17,11 @@ class ApplicationContainer extends Container {
 			throw new \RuntimeException("No configuration file found");
 		}
 		
-		//add directories for autoloading
-		if (array_key_exists('autoload', $config) && is_array($config['autoload'])) {
-			foreach ($config['autoload'] as $ns => $dir) {
-				if (is_array($dir)) {
-					foreach ($dir as $dir_aux) {
-						$loader->add($ns, $dir_aux);
-					}
-				}
-				else {
-					$loader->add($ns, $dir);
-				}
+		//setup application namespaces
+		if (array_key_exists('namespaces', $config) && is_array($config['namespaces'])) {
+			foreach ($config['namespaces'] as $ns) {
+				$loader->add($ns, SERVICES_DIR);
+				$loader->add($ns, COMPONENTS_DIR);
 			}
 		}
 		

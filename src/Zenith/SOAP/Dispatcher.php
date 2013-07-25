@@ -27,6 +27,11 @@ class Dispatcher {
 			throw new \RuntimeException("Operation '{$service_method}' cannot be invoked");
 		}
 	
+		//fix class namespace reference
+		if (strstr($class, '/')) {
+			$class = str_replace('/', '\\', $class);
+		}
+	
 		//create service instance
 		$serviceObj = new $class;
 	
