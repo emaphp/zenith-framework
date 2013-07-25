@@ -74,7 +74,7 @@ class EventManager implements IEventHandler {
 			return;
 		}
 		
-		$method = array_key_exists($err['type'], $this->error_methods) ? $this->error_methods[$errno] : 'addCritical';
+		$method = array_key_exists($err['type'], $this->error_methods) ? $this->error_methods['type'] : 'addCritical';
 		$errstr = sprintf("%s on file %s (line %d)", $err['message'], $err['file'], $err['line']);
 		call_user_func(array($this->logger, $method), $errstr);
 	}

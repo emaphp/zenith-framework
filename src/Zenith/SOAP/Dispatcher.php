@@ -40,7 +40,7 @@ class Dispatcher {
 		}
 		
 		if (!method_exists($serviceObj, $method)) {
-			throw new \RuntimeException("Operation '{$method}' is not available on this service");
+			throw new \RuntimeException("Operation '{$method}' is not available in service '$class'");
 		}
 	
 		//setup service

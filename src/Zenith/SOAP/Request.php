@@ -5,6 +5,10 @@ class Request {
 	protected $service;
 	protected $configuration = array();
 	protected $parameter;
+	const AS_RAW = 0;
+	const AS_XML = 1;
+	const AS_SIMPLEXML = 2;
+	const AS_DOM = 3;
 	
 	public function __construct($service, $configuration, $parameter) {
 		$this->service = $service;
@@ -29,7 +33,21 @@ class Request {
 		return $this->configuration;
 	}
 	
-	public function getParameter() {
+	public function getParameter($as = self::AS_RAW) {
+		if (isset($this->parameter->any)) {
+			if ($as == self::AS_XML) {
+				return $this->parameter->any;
+			}
+			elseif ($as == self::AS_SIMPLEXML) {
+				return simplexml_load_string($this->parameter->any);
+			}
+			elseif ($as == self::AS_DOM) {
+				$dom = new \DOMDocument();
+				$dom->loadXML($this->parameter->any);
+				return $dom;
+			}
+		}
+		
 		return $this->parameter;
 	}
 	
