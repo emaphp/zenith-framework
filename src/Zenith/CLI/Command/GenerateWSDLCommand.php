@@ -41,7 +41,7 @@ class GenerateWSDLCommand extends BleachCommand {
 		
 		//load wsdl configuration
 		$wsdl_config = Application::getInstance()->load_config('wsdl');
-		
+
 		if (is_null($wsdl_config)) {
 			$output->writeln('<error>WSDL configuration not found!</error>');
 			return;
@@ -52,19 +52,24 @@ class GenerateWSDLCommand extends BleachCommand {
 			return;
 		}
 		
+		//obtain template
 		$template = $wsdl_config['template'];
 		
-		if (!array_key_exists('template_params', $wsdl_config) || !is_array($wsdl_config['template_params'])) {
+		if (!array_key_exists('args', $wsdl_config) || !is_array($wsdl_config['args'])) {
 			$output->writeln('<error>No WSDL template parameters defined</error>');
 			return;
 		}
 		
-		$template_params = $wsdl_config['template_params'];
+		//obtain template parameters
+		$template_params = $wsdl_config['args'];
 		
+		//render WSDL
 		$wsdl = $this->view->render($template, $template_params);
 		$output->writeln("<info>WDSL generated successfully!!!</info>");
 		
+		//check if path was specified
 		if (isset($path)) {
+			//store file
 			if (!file_put_contents($path, $wsdl)) {
 				$output->writeln("<error>Failed to store file in $path. Check folder permissions.</error>");
 			}
@@ -73,6 +78,7 @@ class GenerateWSDLCommand extends BleachCommand {
 			}
 		}
 		
+		//output WSDL
 		if ($input->getOption('output')) {
 			$output->writeln($wsdl);
 		}

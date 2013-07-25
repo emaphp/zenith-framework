@@ -3,6 +3,7 @@ namespace Zenith\IoC;
 
 use Zenith\Application;
 use Zenith\Event\IEventHandler;
+use Injector\Container;
 
 class ApplicationContainer extends Container {
 	public function __construct($environment, &$loader) {

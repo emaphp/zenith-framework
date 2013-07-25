@@ -7,7 +7,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ServiceCommand extends BleachCommand {
+class CreateServiceCommand extends BleachCommand {
 	public static $validation_regex = '/^[A-z|_]{1}[\w]*$/';
 	
 	protected function configure() {
@@ -41,6 +41,11 @@ class ServiceCommand extends BleachCommand {
 	
 	protected function execute(InputInterface $input, OutputInterface $output) {
 		$class = $input->getArgument('class');
+		
+		if (empty($class)) {
+			$output->writeln("<error>You must define a class name</error>");
+			return;
+		}
 		
 		//remove slashes
 		if (preg_match('@^/@', $class)) {

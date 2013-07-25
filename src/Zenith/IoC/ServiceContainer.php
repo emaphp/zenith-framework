@@ -3,6 +3,7 @@ namespace Zenith\IoC;
 
 use Zenith\Application;
 use Zenith\View\View;
+use Injector\Container;
 
 class ServiceContainer extends Container {
 	public function configure() {

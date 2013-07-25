@@ -5,7 +5,6 @@
  */
 use Zenith\CLI\BleachCLI;
 use Zenith\CLI\Command\BleachCommand;
-use Zenith\IoC\Container;
 
 class BleachCLITest extends \PHPUnit_Framework_TestCase {
 	public function testCommandBuilder() {
@@ -21,10 +20,10 @@ class BleachCLITest extends \PHPUnit_Framework_TestCase {
 			$this->assertTrue(is_string($cmd->container));
 			
 			$container = new $cmd->container;
-			$this->assertTrue($container instanceof Container);
 			$container->configure();
-			$container->injectAll($cmd);
+			$container->inject($cmd);
 			$this->assertObjectHasAttribute('view', $cmd);
+			$this->assertEquals('Zenith\View\View', get_class($cmd->view));
 		}
 	}
 }

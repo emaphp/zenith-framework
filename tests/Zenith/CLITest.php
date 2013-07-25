@@ -3,7 +3,7 @@
  * Tests the WSDL and service generation
  * Author: Emmanuel Antico
  */
-use Zenith\CLI\Command\ServiceCommand;
+use Zenith\CLI\Command\CreateServiceCommand;
 use Zenith\CLI\Command\GenerateWSDLCommand;
 use Zenith\Application;
 
@@ -16,7 +16,7 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 	protected $wsdl_path;
 	
 	public function setUp() {
-		$this->validation_regex = ServiceCommand::$validation_regex;
+		$this->validation_regex = CreateServiceCommand::$validation_regex;
 		
 		//build relative routes to services drectory
 		$this->class_dir = substr(str_replace(getcwd(), '', SERVICES_DIR), 1) . $this->test_dir;
@@ -66,13 +66,13 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 	}
 	
 	public function testMakeDir() {
-		$command = new ServiceCommand();
+		$command = new CreateServiceCommand();
 		$success = $command->make_directory($this->class_dir);
 		$this->assertTrue($success);
 	}
 	
 	public function testMakeService1() {
-		$command = new ServiceCommand();
+		$command = new CreateServiceCommand();
 		$container = $command->container;
 		$c = new $container();
 		$c->configure();
@@ -82,7 +82,7 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 	}
 	
 	public function testMakeService2() {
-		$command = new ServiceCommand();
+		$command = new CreateServiceCommand();
 		$container = $command->container;
 		$c = new $container();
 		$c->configure();
@@ -92,7 +92,7 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 	}
 	
 	public function testMakeService3() {
-		$command = new ServiceCommand();
+		$command = new CreateServiceCommand();
 		$container = $command->container;
 		$c = new $container();
 		$c->configure();
@@ -102,7 +102,7 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 	}
 	
 	public function testWriteService() {
-		$command = new ServiceCommand();
+		$command = new CreateServiceCommand();
 		$container = $command->container;
 		$c = new $container();
 		$c->configure();
