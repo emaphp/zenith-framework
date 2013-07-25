@@ -5,16 +5,11 @@ use Zenith\Application;
 use Zenith\Event\IEventHandler;
 use Injector\Container;
 
-class ApplicationContainer extends Container {
-	public function __construct($environment, &$loader) {
-		//application environment
-		$this['environment'] = $environment;
-		
-		//application autoloader
-		$this['loader'] = $loader;
-	}
-	
+class ApplicationContainer extends Container {	
 	public function configure() {
+		//get composer autoloader
+		$loader = require 'vendor/autoload.php';
+		
 		//obtain configuration
 		$config = Application::getInstance()->load_config('app', $this['environment']);
 		
@@ -25,7 +20,14 @@ class ApplicationContainer extends Container {
 		//add directories for autoloading
 		if (array_key_exists('autoload', $config) && is_array($config['autoload'])) {
 			foreach ($config['autoload'] as $ns => $dir) {
-				$this['loader']->add($ns, $dir);
+				if (is_array($dir)) {
+					foreach ($dir as $dir_aux) {
+						$loader->add($ns, $dir_aux);
+					}
+				}
+				else {
+					$loader->add($ns, $dir);
+				}
 			}
 		}
 		

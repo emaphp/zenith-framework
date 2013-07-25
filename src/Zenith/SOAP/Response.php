@@ -15,7 +15,7 @@ class Response {
 	}
 	
 	public function setResult($result) {
-		$this->result = array('any' => $this->result);
+		$this->result = array('any' => $result);
 	}
 	
 	public function build() {
