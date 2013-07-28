@@ -7,6 +7,9 @@ use Zenith\CLI\BleachCLI;
 use Zenith\CLI\Command\BleachCommand;
 
 class BleachCLITest extends \PHPUnit_Framework_TestCase {
+	/**
+	 * Tests commands initialization
+	 */
 	public function testCommandBuilder() {
 		$cli = new BleachCLI();
 		$this->assertObjectHasAttribute('cli_commands', $cli);
@@ -24,6 +27,8 @@ class BleachCLITest extends \PHPUnit_Framework_TestCase {
 			$container->inject($cmd);
 			$this->assertObjectHasAttribute('view', $cmd);
 			$this->assertEquals('Zenith\View\View', get_class($cmd->view));
+			$this->assertObjectHasAttribute('fs', $cmd);
+			$this->assertEquals('Symfony\Component\Filesystem\Filesystem', get_class($cmd->fs));
 		}
 	}
 }

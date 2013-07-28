@@ -6,6 +6,9 @@
 use Zenith\Application;
 
 class ApplicationTest extends \PHPUnit_Framework_TestCase {
+	/**
+	 * Loads a configuration file without environment
+	 */
 	public function testLoadConfig() {
 		$app = Application::getInstance();
 		$config = $app->load_config('wsdl');
@@ -19,13 +22,16 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase {
 		$app->clear_config('wsdl');
 	}
 	
+	/**
+	 * Loads a configuration file with a custom environment
+	 */
 	public function testLoadEnvironmentConfig() {
 		$app = Application::getInstance();
 		$config = $app->load_config('app', 'production');
 		
 		$this->assertTrue(is_array($config));
 		$this->assertArrayHasKey('dispatcher', $config);
-		$this->assertEquals('Bleach\SOAP\Dispatcher', $config['dispatcher']);
+		$this->assertEquals('Zenith\SOAP\Dispatcher', $config['dispatcher']);
 		$this->assertArrayHasKey('inject', $config);
 		$this->assertTrue(is_array($config['inject']));
 		$this->assertArrayHasKey('logger', $config['inject']);
@@ -33,6 +39,9 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase {
 		$app->clear_config('app');
 	}
 	
+	/**
+	 * Loads a configuration file with a previously defined environment
+	 */
 	public function testLoadApplicationConfig() {
 		$app = Application::getInstance();
 		$app->environment = 'development';
@@ -40,7 +49,7 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase {
 		
 		$this->assertTrue(is_array($config));
 		$this->assertArrayHasKey('dispatcher', $config);
-		$this->assertEquals('Bleach\SOAP\Dispatcher', $config['dispatcher']);
+		$this->assertEquals('Zenith\SOAP\Dispatcher', $config['dispatcher']);
 		$this->assertArrayHasKey('inject', $config);
 		$this->assertTrue(is_array($config['inject']));
 		$this->assertArrayHasKey('logger', $config['inject']);

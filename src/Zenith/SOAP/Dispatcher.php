@@ -16,6 +16,7 @@ class Dispatcher {
 	 * @return array
 	 */
 	public function execute($service, $configuration, $parameter) {
+		//build request
 		$request = new Request($service, $configuration, $parameter);
 		
 		//get class and method tags
@@ -24,7 +25,7 @@ class Dispatcher {
 		
 		//security check: avoid calling magic methods
 		if (preg_match('@^__@', $method)) {
-			throw new \RuntimeException("Operation '{$service_method}' cannot be invoked");
+			throw new \RuntimeException("Operation '{$method}' cannot be invoked!");
 		}
 	
 		//fix class namespace reference
@@ -36,11 +37,11 @@ class Dispatcher {
 		$serviceObj = new $class;
 	
 		if (!($serviceObj instanceof Service)) {
-			throw new \RuntimeException("Class '$class' is not a valid service");
+			throw new \RuntimeException("Class '$class' is not a valid service!");
 		}
 		
 		if (!method_exists($serviceObj, $method)) {
-			throw new \RuntimeException("Operation '{$method}' is not available in service '$class'");
+			throw new \RuntimeException("Operation '{$method}' is not available in service '$class'!");
 		}
 	
 		//setup service

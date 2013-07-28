@@ -20,17 +20,17 @@ class MainController {
 			$config = $app->load_config('server');
 		
 			if (is_null($config) || !is_array($config)) {
-				throw new \RuntimeException("No server configuration found");
+				throw new \RuntimeException("No server configuration found!");
 			}
 			
 			if (!array_key_exists('wsdl', $config) || !is_string($config['wsdl']) || empty($config['wsdl'])) {
-				throw new \RuntimeException("No WSDL file defined");
+				throw new \RuntimeException("No WSDL file defined!");
 			}
 			
 			$wsdl = $config['wsdl'];
 			
 			if (!file_exists($wsdl)) {
-				throw new \RuntimeException("WSDL file not found");
+				throw new \RuntimeException("WSDL file not found!");
 			}
 			
 			readfile($wsdl);
@@ -42,7 +42,7 @@ class MainController {
 		
 		//obtain dispatcher class from config
 		if (!array_key_exists('dispatcher', $config) || !is_string($config['dispatcher']) || empty($config['dispatcher'])) {
-			throw new \RuntimeException("No dispatcher class defined");
+			throw new \RuntimeException("No dispatcher class defined!");
 		}
 		
 		//call soap dispatcher
@@ -52,7 +52,7 @@ class MainController {
 		$server_config = $app->load_config('server');
 		
 		if (is_null($server_config)) {
-			throw new \RuntimeConfiguration("No server configuration found");
+			throw new \RuntimeConfiguration("No server configuration found!");
 		}
 		
 		//get server config vars

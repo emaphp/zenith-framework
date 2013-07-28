@@ -2,13 +2,17 @@
 namespace Zenith\SOAP;
 
 class Request {
-	protected $service;
-	protected $configuration = array();
-	protected $parameter;
+	/**
+	 * Conversion constants
+	 */
 	const AS_RAW = 0;
 	const AS_XML = 1;
 	const AS_SIMPLEXML = 2;
 	const AS_DOM = 3;
+	
+	protected $service;
+	protected $configuration = array();
+	protected $parameter;
 	
 	public function __construct($service, $configuration, $parameter) {
 		$this->service = $service;

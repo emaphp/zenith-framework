@@ -11,8 +11,9 @@ class ServiceContainer extends Container {
 		$config = Application::getInstance()->load_config('app');
 		$twig_config = array_key_exists('twig', $config) && is_array($config['twig']) ? $config['twig'] : array();
 		
+		//create 'view' service
 		$this['view'] = function ($c) use ($twig_config) {
-			return new View(VIEWS_DIR, $twig_config);
+			return new View($twig_config);
 		};
 	}
 }

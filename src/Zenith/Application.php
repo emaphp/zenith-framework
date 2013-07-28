@@ -15,6 +15,12 @@ class Application {
 	public $environment;
 	
 	/**
+	 * Application paths
+	 * @var array
+	 */
+	public $paths;
+	
+	/**
 	 * Class instance
 	 * @var Zenith\Application
 	 */
@@ -68,11 +74,10 @@ class Application {
 		}
 		
 		//include file from main directory
-		$filename = CONFIG_DIR . "/$name.php";
+		$filename = $this->path('config', "/$name.php");
 		
-		if (file_exists($filename)) {
-			include $filename;
-			$app_config = $config;
+		if (file_exists($filename)) {	
+			$app_config = require $filename;
 		}
 		else {
 			$app_config = null;
@@ -83,10 +88,10 @@ class Application {
 			
 			if (!is_null($environment)) {
 				//include environment file
-				$env_filename = CONFIG_DIR . "/$environment/$name.php";
+				$env_filename = $this->path('config', "/$environment/$name.php");
 					
 				if (file_exists($env_filename)) {
-					include $env_filename;
+					$config = require $env_filename;
 						
 					if (!is_null($app_config)) {
 						$app_config = array_merge($app_config, $config);
@@ -103,5 +108,39 @@ class Application {
 		}
 		
 		return $app_config;
+	}
+	
+	/**
+	 * Builds a path with all components sent
+	 * @param string $path
+	 * @return string
+	 */
+	public function build_path($path) {
+		$args = func_get_args();
+		$n_path = count($args) > 1 ? implode(DIRECTORY_SEPARATOR, $args) : $path;
+		$n_path = preg_replace('#' . DIRECTORY_SEPARATOR . '+#', DIRECTORY_SEPARATOR, $n_path);
+		return $n_path;
+	}
+	
+	/**
+	 * Builds a path to a previously declared directory in bootstrap/paths.php file
+	 * @param string $dir
+	 * @param string $path
+	 * @throws \InvalidArgumentException
+	 * @return string
+	 */
+	public function path($dir, $path = null) {
+		if (!array_key_exists($dir, $this->paths)) {
+			throw new \InvalidArgumentException("No path found for '$path'!");
+		}
+		
+		//build path
+		$p = $this->build_path(getcwd(), $this->paths[$dir]);
+		
+		if (!is_null($path)) {
+			$p = $this->build_path($p, $path);
+		}
+		
+		return $p;
 	}
 }

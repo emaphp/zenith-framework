@@ -24,7 +24,7 @@ class PHPEngine {
 		$view = $this->dir . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, $explode);
 		
 		if (!file_exists($view)) {
-			throw new \InvalidArgumentException("View '$view' does not exists");
+			throw new \InvalidArgumentException("View '$view' does not exists!");
 		}
 		
 		//default arguments

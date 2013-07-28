@@ -18,13 +18,13 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 	public function setUp() {
 		$this->validation_regex = CreateServiceCommand::$validation_regex;
 		
-		//build relative routes to services drectory
-		$this->class_dir = substr(str_replace(getcwd(), '', SERVICES_DIR), 1) . $this->test_dir;
-		$this->class_file = $this->class_dir . DIRECTORY_SEPARATOR . 'Sales.php';
+		//build routes to services drectory
+		$this->class_dir = Application::getInstance()->path('services', $this->test_dir);
+		$this->class_file = Application::getInstance()->build_path($this->class_dir, 'Sales.php');
 		
 		//build wsdl path
 		$server_config = Application::getInstance()->load_config('server');
-		$this->wsdl_path = substr(str_replace(getcwd(), '', $server_config['wsdl']), 1);
+		$this->wsdl_path = Application::getInstance()->path('wsdl', $server_config['wsdl']);
 	}
 	
 	public function tearDown() {
@@ -38,10 +38,9 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 		
 		if (is_dir($this->class_dir)) {
 			$explode = explode(DIRECTORY_SEPARATOR, $this->test_dir);
-			$dir = substr(str_replace(getcwd(), '', SERVICES_DIR), 1);
 			
 			for ($i = 0, $n = count($explode); $i < $n; $i++) {
-				$class_dir = $dir . implode(DIRECTORY_SEPARATOR, array_slice($explode, 0, $n - $i));
+				$class_dir = Application::getInstance()->path('services', implode(DIRECTORY_SEPARATOR, array_slice($explode, 0, $n - $i)));
 				rmdir($class_dir);
 			}
 		}
@@ -63,12 +62,6 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 		//write file
 		$success = file_put_contents($this->wsdl_path, $wsdl);
 		$this->assertTrue(is_int($success));
-	}
-	
-	public function testMakeDir() {
-		$command = new CreateServiceCommand();
-		$success = $command->make_directory($this->class_dir);
-		$this->assertTrue($success);
 	}
 	
 	public function testMakeService1() {
@@ -108,14 +101,17 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 		$c->configure();
 		
 		//create directory
-		$success = $command->make_directory($this->class_dir);
-		$this->assertTrue($success);
+		$c['fs']->mkdir($this->class_dir);
 		
 		//write service
 		$service = $c['view']->render('command/service', array('namespace' => 'Acme\Company', 'classname' => 'Sales', 'methods' => array('getTotal', 'getItem')));
-		$success = file_put_contents($this->class_dir . DIRECTORY_SEPARATOR . 'Sales.php', $service);
+		$success = file_put_contents($this->class_file, $service);
 		$this->assertTrue(is_int($success));
 	}
+	
+	/**
+	 * String validation tests
+	 */
 	
 	public function testValidationRegex() {
 		$class = 'Acme';

@@ -2,6 +2,7 @@
 namespace Zenith\View;
 
 use Zenith\View\Engine\PHPEngine;
+use Zenith\Application;
 
 class View {
 	/**
@@ -16,7 +17,9 @@ class View {
 	 */
 	public $extensions = array('php' => 'default', 'twig' => 'twig');
 	
-	public function __construct($views_dir, $twig_config) {
+	public function __construct($twig_config) {
+		$views_dir = Application::getInstance()->path('views');
+				
 		//template engines
 		$this->engines = array('default' => new PHPEngine($views_dir),
 							   'twig'    => new \Twig_Environment(new \Twig_Loader_Filesystem($views_dir), $twig_config));
@@ -45,7 +48,7 @@ class View {
 	 */
 	public function render($view, $params = null) {
 		if (!is_string($view) || empty($view)) {
-			throw new \InvalidArgumentException("Parameter 'view' is not a valid string");
+			throw new \InvalidArgumentException("Parameter 'view' is not a valid string!");
 		}
 				
 		//check if extension is especified
@@ -56,13 +59,14 @@ class View {
 			$extension = $matches[2];
 			
 			if (!array_key_exists($extension, $this->extensions)) {
-				throw new \RuntimeException("No suitable engine found for extension '$engine'");
+				throw new \RuntimeException("No suitable engine found for extension '$engine'!");
 			}
 			
 			$engine = $this->extensions[$extension];
+			$path = Application::getInstance()->path('views', $filename);
 			
-			if (!file_exists(VIEWS_DIR . $filename)) {
-				throw new \InvalidArgumentException("View '$view' does not exists");
+			if (!file_exists($path)) {
+				throw new \InvalidArgumentException("View '$view' does not exists!");
 			}
 			
 			return $this->engines[$engine]->render($view, $params);
@@ -70,11 +74,13 @@ class View {
 		
 		//try appending all possible extensions to view
 		foreach ($this->view_list($view) as $engine => $file) {
-			if (file_exists(VIEWS_DIR . $file)) {
+			$path = Application::getInstance()->path('views', $file);
+			
+			if (file_exists($path)) {
 				return $this->engines[$engine]->render($file, $params);
 			}
 		}
 		
-		throw new \InvalidArgumentException("View '$view' does not exists");
+		throw new \InvalidArgumentException("View '$view' does not exists!");
 	}
 }

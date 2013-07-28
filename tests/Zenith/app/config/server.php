@@ -1,12 +1,13 @@
 <?php
-$config = array(
+return array(
 		/**
 		 * Server WSDL file
 		 */
-		'wsdl' => WSDL_DIR . 'application.wsdl',
+		'wsdl' => 'application.wsdl',
 		
 		/**
 		 * Server options
 		 * Additional configuration for SoapServer instance
 		 */
-		'options' => array());
+		'options' => array()
+);

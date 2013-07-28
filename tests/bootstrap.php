@@ -3,34 +3,25 @@
  * Load composer autoloader
  */
 $loader = require __DIR__ . "/../vendor/autoload.php";
+
+/**
+ * Setup library directory
+ */
 $loader->add('Zenith\\', __DIR__ . '/../src/');
 
 /**
- * Directories
+ * Load application directories
  */
-//root directory
-define('ROOT_DIR', __DIR__ . '/Zenith/');
+$paths = require __DIR__ . '/Zenith/bootstrap/paths.php';
 
-//application directory
-define('APP_DIR', ROOT_DIR . 'app/');
+/**
+ * Setup application paths
+ */
+$app = Zenith\Application::getInstance();
+$app->paths = $paths;
 
-//storage directory
-define('STORAGE_DIR', ROOT_DIR . 'app/storage/');
-
-//services directory
-define('SERVICES_DIR', APP_DIR . 'services/');
-
-//configuration directory
-define('CONFIG_DIR', APP_DIR . 'config/');
-
-//views directory
-define('VIEWS_DIR', APP_DIR . 'views/');
-
-//application WSDL directory
-define('WSDL_DIR', STORAGE_DIR . 'wsdl/');
-
-//compiled templates directory
-define('TWIG_DIR', STORAGE_DIR . 'twig');
-
-//logs directory
-define('LOGS_DIR', STORAGE_DIR . 'logs/');
+/**
+ * Add autoload folders
+ */
+$loader->add('', Zenith\Application::getInstance()->path('services'));
+$loader->add('', Zenith\Application::getInstance()->path('components'));

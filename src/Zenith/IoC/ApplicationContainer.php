@@ -4,6 +4,8 @@ namespace Zenith\IoC;
 use Zenith\Application;
 use Zenith\Event\IEventHandler;
 use Injector\Container;
+use Zenith\Error\ErrorHandler;
+use Monolog\Logger;
 
 class ApplicationContainer extends Container {	
 	public function configure() {
@@ -11,17 +13,17 @@ class ApplicationContainer extends Container {
 		$loader = require 'vendor/autoload.php';
 		
 		//obtain configuration
-		$config = Application::getInstance()->load_config('app', $this['environment']);
+		$config = Application::getInstance()->load_config('app');
 		
 		if (is_null($config)) {
-			throw new \RuntimeException("No configuration file found");
+			throw new \RuntimeException("No configuration file found!");
 		}
 		
 		//setup application namespaces
 		if (array_key_exists('namespaces', $config) && is_array($config['namespaces'])) {
 			foreach ($config['namespaces'] as $ns) {
-				$loader->add($ns, SERVICES_DIR);
-				$loader->add($ns, COMPONENTS_DIR);
+				$loader->add($ns, Application::getInstance()->path('services'));
+				$loader->add($ns, Application::getInstance()->path('components'));
 			}
 		}
 		
@@ -30,42 +32,38 @@ class ApplicationContainer extends Container {
 		
 		//logger object
 		if (!array_key_exists('logger', $inject) || !is_string($inject['logger']) || empty($inject['logger'])) {
-			throw new \RuntimeException("No application logger found");
+			throw new \RuntimeException("No application logger found!");
 		}
 		
-		$app_logger = $inject['logger'];
+		//setup logger object
+		$logger = $inject['logger'];
 		
-		$this['logger'] = $this->share(function ($c) use ($app_logger) {
-			return new $app_logger;
+		$this['logger'] = $this->share(function ($c) use ($logger) {
+			$logger_instance = new $logger;
+			
+			if (!($logger_instance instanceof Logger)) {
+				throw new \RuntimeException("Class '$logger' is not a valid instance of Monolog\Logger!");
+			}
+			
+			return $logger_instance;
 		});
 		
-		//event handler object
-		if (!array_key_exists('event', $inject) || !is_string($inject['event']) || empty($inject['event'])) {
-			throw new \RuntimeException("No event handler found");
-		}
-		
-		$app_event = $inject['event'];
-		
-		$this['event'] = $this->share(function ($c) use ($app_event) {
-			$event_handler = new $app_event;
-			$event_handler->setEventLogger($c['logger']);
-			return $event_handler;		
+		//setup error handler object
+		$this['error_handler'] = $this->share(function($c) {
+			$eventHandler = new ErrorHandler($c['logger']);
+			return $event_handler;
 		});
-		
-		//obtain event handler
-		$event_handler = $this['event'];
-		
-		if (!($event_handler instanceof IEventHandler)) {
-			throw new \RuntimeException("Property 'event' is not a valid IEventHandler instance");
-		}
+
+		//get error handler
+		$error_handler = $this['error_handler'];
 		
 		//bind events to class
-		set_error_handler(array($event_handler, 'error_handler'));
-		set_exception_handler(array($event_handler, 'exception_handler'));
-		register_shutdown_function(array($event_handler, 'shutdown_handler'));
+		set_error_handler(array(&$error_handler, 'error_handler'));
+		set_exception_handler(array(&$error_handler, 'exception_handler'));
+		register_shutdown_function(array(&$error_handler, 'shutdown_handler'));
 		
 		//additional dependencies
-		$inject = array_diff_key($inject, array_flip(array('logger', 'event')));
+		$inject = array_diff_key($inject, array_flip(array('logger')));
 		
 		if (!empty($inject)) {
 			do {
@@ -73,7 +71,7 @@ class ApplicationContainer extends Container {
 				$value = current($inject);
 					
 				if (!is_string($property) || empty($property)) {
-					throw new \RuntimeException("Injected property is not valid");
+					throw new \RuntimeException("Injected property is not valid!");
 				}
 					
 				//generate object from class name

@@ -29,10 +29,11 @@ class GenerateWSDLCommandTest extends \PHPUnit_Framework_TestCase {
 	public function tearDown() {
 		$app = \Zenith\Application::getInstance();
 		$app->clear_config();
+		$app->environment = 'development';
 		$config = $app->load_config('server');
 		
-		if (is_array($config) && array_key_exists('wsdl', $config) && file_exists($config['wsdl'])) {
-			unlink($config['wsdl']);
+		if (is_array($config) && array_key_exists('wsdl', $config) && file_exists($app->path('wsdl', $config['wsdl']))) {
+			unlink($app->path('wsdl', $config['wsdl']));
 		}
 		
 		//restore application environment
@@ -47,9 +48,10 @@ class GenerateWSDLCommandTest extends \PHPUnit_Framework_TestCase {
 		
 		$command = $this->application->find('generate-wsdl');
 		$commandTester = new CommandTester($command);
-		$commandTester->execute(array('command' => $command->getName()));
+		$success = $commandTester->execute(array('command' => $command->getName()));
 
-		$this->assertRegExp('/No target path specified. Generated WSDL will not be stored/', $commandTester->getDisplay());
+		$this->assertRegExp('/No target path specified in \'server\' configuration file. Generated WSDL will not be stored/', $commandTester->getDisplay());
+		$this->assertEquals(0, $success);
 	}
 	
 	public function testRender() {
@@ -60,14 +62,18 @@ class GenerateWSDLCommandTest extends \PHPUnit_Framework_TestCase {
 		
 		$command = $this->application->find('generate-wsdl');
 		$commandTester = new CommandTester($command);
-		$commandTester->execute(array('command' => $command->getName()));
+		$success = $commandTester->execute(array('command' => $command->getName(), '--force'));
 		
 		$config = $app->load_config('server');
+		$this->assertTrue(is_array($config));
+		$this->assertArrayHasKey('wsdl', $config);
+		$this->assertEquals('application.wsdl', $config['wsdl']);
 		
-		if (is_array($config) && array_key_exists('wsdl', $config) && file_exists($config['wsdl'])) {
-			$this->assertTrue(file_exists($config['wsdl']));
+		if (is_array($config) && array_key_exists('wsdl', $config) && file_exists($app->path('wsdl', $config['wsdl']))) {
+			$this->assertTrue(file_exists($app->path('wsdl', $config['wsdl'])));
 		}
 		
 		$this->assertRegExp('/WDSL generated successfully!!!/', $commandTester->getDisplay());
+		$this->assertEquals(0, $success);
 	}
 }

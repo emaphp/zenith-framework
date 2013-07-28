@@ -5,14 +5,15 @@
  */
 use Zenith\Log\DevelopmentLogger;
 use Zenith\Log\ProductionLogger;
+use Zenith\Application;
 
 class LogTest extends \PHPUnit_Framework_TestCase {
 	protected $development_log;
 	protected $production_log;
 	
 	public function setUp() {
-		$this->development_log = LOGS_DIR . 'development_' . date('Y-m-d') . '.log';
-		$this->production_log = LOGS_DIR . 'production_' . date('Y-m-d') . '.log';
+		$this->development_log = Application::getInstance()->path('logs', 'development_' . date('Y-m-d') . '.log'); 
+		$this->production_log = Application::getInstance()->path('logs', 'production_' . date('Y-m-d') . '.log');
 	}
 	
 	public function tearDown() {

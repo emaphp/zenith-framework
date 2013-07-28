@@ -1,5 +1,5 @@
 <?php
-$config = array(
+return array(
 		/**
 		 * Server WSDL file
 		 */
@@ -9,4 +9,5 @@ $config = array(
 		 * Server options
 		 * Additional configuration for SoapServer instance
 		 */
-		'options' => array());
+		'options' => array()
+);

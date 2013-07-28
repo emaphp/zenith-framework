@@ -1,16 +1,17 @@
 <?php
-$config = array(		
+return array(		
 		/**
 		 * Dispatcher class
 		 * This class implements the method declared in the WSDL
 		 */
-		'dispatcher' => 'Bleach\SOAP\Dispatcher',
+		'dispatcher' => 'Zenith\SOAP\Dispatcher',
 		
 		/**
-		 * Autoloader configuration
-		 * Additional directories to add to the application autoloader (namespace => directory)
+		 * Application namespaces
+		 * Use this key to indicate which namespaces are associated with classes stored in the 'services' and 'components' directories.
+		 * Example: 'namespaces' => array('', 'Acme\\', 'Company\\')
 		 */
-		'autoload' => array('' => SERVICES_DIR),
+		'namespaces' => array('', 'Acme\\'),
 		
 		/**
 		 * Twig configuration
