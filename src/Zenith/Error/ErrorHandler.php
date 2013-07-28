@@ -1,6 +1,8 @@
 <?php
 namespace Zenith\Error;
 
+use Monolog\Logger;
+
 class ErrorHandler {
 	/**
 	 * Error logger
@@ -25,6 +27,10 @@ class ErrorHandler {
 	 * @var string
 	 */
 	public $exception_method = 'addCritical';
+	
+	public function __construct(Logger $logger) {
+		$this->logger = $logger;
+	}
 	
 	/**
 	 * Error handler
