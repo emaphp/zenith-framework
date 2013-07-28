@@ -27,7 +27,7 @@ class MainController {
 				throw new \RuntimeException("No WSDL file defined!");
 			}
 			
-			$wsdl = $config['wsdl'];
+			$wsdl = $app->path('wsdl', $config['wsdl']);
 			
 			if (!file_exists($wsdl)) {
 				throw new \RuntimeException("WSDL file not found!");
