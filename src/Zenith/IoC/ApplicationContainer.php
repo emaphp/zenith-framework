@@ -50,8 +50,8 @@ class ApplicationContainer extends Container {
 		
 		//setup error handler object
 		$this['error_handler'] = $this->share(function($c) {
-			$eventHandler = new ErrorHandler($c['logger']);
-			return $event_handler;
+			$errorHandler = new ErrorHandler($c['logger']);
+			return $errorHandler;
 		});
 
 		//get error handler
