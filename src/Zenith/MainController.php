@@ -60,7 +60,7 @@ class MainController {
 		$options = array_key_exists('options', $server_config) && is_array($server_config['options']) ? $server_config['options'] : array();
 		
 		//initialize soap server
-		$server = new \SoapServer($wsdl, $options);
+		$server = new \SoapServer($app->path('wsdl', $wsdl), $options);
 		$server->setObject($dispatcher);
 		$server->handle();
 	}
