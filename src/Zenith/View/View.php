@@ -63,7 +63,7 @@ class View {
 			}
 			
 			$engine = $this->extensions[$extension];
-			$path = Application::getInstance()->path('views', $filename);
+			$path = Application::getInstance()->path('views', $view);
 			
 			if (!file_exists($path)) {
 				throw new \InvalidArgumentException("View '$view' does not exists!");
