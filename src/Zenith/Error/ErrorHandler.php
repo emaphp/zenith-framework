@@ -27,6 +27,12 @@ class ErrorHandler {
 	public $exception_method = 'addCritical';
 	
 	/**
+	 * When true, a custom soap fault will be generated in case a critical error is thrown
+	 * @var bool
+	 */
+	public $safe_mode = true;
+	
+	/**
 	 * Logs an exception
 	 * @param \Exception $ex
 	 */
@@ -50,7 +56,7 @@ class ErrorHandler {
 		if (isset($this->logger)) {
 			$message = sprintf("%s on file %s (line %d)", $errstr, $errfile, $errline);
 			$log_method = array_key_exists($errno, $this->error_methods) ? $this->error_methods[$errno] : 'addError';
-			call_user_func(array($this->logger, $method), $errstr, $errcontext);
+			call_user_func(array($this->logger, $log_method), $message, $errcontext);
 		}
 	}
 
@@ -76,10 +82,12 @@ class ErrorHandler {
 <?xml version="1.0" encoding="UTF-8"?>
 <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><SOAP-ENV:Fault><faultcode>Server</faultcode><faultstring>$message</faultstring></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>
 XML;
-		//send headers
-		header('HTTP/1.1 500 Internal Service Error');
-		header('Content-Type: text/xml; charset=utf-8');
-		echo $fault;
+		if (!headers_sent()) {
+			//send headers
+			header('HTTP/1.1 500 Internal Service Error');
+			header('Content-Type: text/xml; charset=utf-8');
+			echo $fault;
+		}
 	}
 	
 	/**
@@ -95,7 +103,7 @@ XML;
 		$this->logError($errno, $errstr, $errfile, $errline, $errcontext);
 		
 		//if the error will halt the application a custom soap fault is builded
-		if (!$this->error_wont_halt($errno) && php_sapi_name() != 'cli') {
+		if (!$this->error_wont_halt($errno) && php_sapi_name() != 'cli' && $this->safe_mode) {
 			$this->send_custom_fault($errstr);
 		}
 		
@@ -109,7 +117,7 @@ XML;
 	public function exception_handler(\Exception $ex) {
 		$this->logException($ex);
 		
-		if (php_sapi_name() != 'cli') {
+		if (php_sapi_name() != 'cli' && $this->safe_mode) {
 			$this->send_custom_fault($ex->getMessage());
 		}
 	}
@@ -123,9 +131,9 @@ XML;
 		}
 	
 		//log error
-		$this->logError($err['type'], $err['message'], $err['file'], $err['line'], null);
+		$this->logError($err['type'], $err['message'], $err['file'], $err['line'], array());
 		
-		if (!$this->error_wont_halt($err['type']) && php_sapi_name() != 'cli') {
+		if (!$this->error_wont_halt($err['type']) && php_sapi_name() != 'cli' && $this->safe_mode) {
 			$this->send_custom_fault($err['message']);
 		}
 	}

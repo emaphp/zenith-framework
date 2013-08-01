@@ -17,6 +17,9 @@ class Dispatcher {
 	 * @return array
 	 */
 	public function execute($service, $configuration, $parameter) {
+		//avoid throwing custom faults
+		Application::getInstance()->error_handler->safe_mode = false;
+		
 		//build request
 		$request = new Request($service, $configuration, $parameter);
 		
@@ -81,7 +84,7 @@ class Dispatcher {
 		}
 		catch (\Exception $e) {
 			//log exception
-			Application::getInstance()->error_handler->logException($se);
+			Application::getInstance()->error_handler->logException($e);
 			set_exception_handler(null);
 			$sf = new \SoapFault("Server", $e->getMessage());
 			throw $sf;
