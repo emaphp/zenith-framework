@@ -21,13 +21,13 @@ class CreateServiceCommandTest extends \PHPUnit_Framework_TestCase {
 	}
 	
 	public function tearDown() {
-		if (file_exists(\Zenith\Application::getInstance()->path('services', $this->test_route . '.php'))) {
-			unlink(\Zenith\Application::getInstance()->path('services', $this->test_route . '.php'));
-			rmdir(\Zenith\Application::getInstance()->path('services', dirname($this->test_route)));
+		if (file_exists(\Zenith\Application::getInstance()->path('components', $this->test_route . '.php'))) {
+			unlink(\Zenith\Application::getInstance()->path('components', $this->test_route . '.php'));
+			rmdir(\Zenith\Application::getInstance()->path('components', dirname($this->test_route)));
 		}
 		
-		if (file_exists(\Zenith\Application::getInstance()->path('services', $this->test_class . '.php'))) {
-			unlink(\Zenith\Application::getInstance()->path('services', $this->test_class . '.php'));
+		if (file_exists(\Zenith\Application::getInstance()->path('components', $this->test_class . '.php'))) {
+			unlink(\Zenith\Application::getInstance()->path('components', $this->test_class . '.php'));
 		}
 	}
 	
@@ -84,7 +84,7 @@ class CreateServiceCommandTest extends \PHPUnit_Framework_TestCase {
 		$commandTester = new CommandTester($command);
 		$success = $commandTester->execute(array('command' => $command->getName(), 'class' => $this->test_class));
 		$this->assertRegExp('/New service created/', $commandTester->getDisplay());
-		$this->assertTrue(file_exists(\Zenith\Application::getInstance()->path('services', $this->test_class . '.php')));
+		$this->assertTrue(file_exists(\Zenith\Application::getInstance()->path('components', $this->test_class . '.php')));
 		$this->assertEquals(0, $success);
 	}
 	
@@ -93,7 +93,7 @@ class CreateServiceCommandTest extends \PHPUnit_Framework_TestCase {
 		$commandTester = new CommandTester($command);
 		$success = $commandTester->execute(array('command' => $command->getName(), 'class' => $this->test_route));
 		$this->assertRegExp('/New service created/', $commandTester->getDisplay());
-		$this->assertTrue(file_exists(\Zenith\Application::getInstance()->path('services', $this->test_route . '.php')));
+		$this->assertTrue(file_exists(\Zenith\Application::getInstance()->path('components', $this->test_route . '.php')));
 		$this->assertEquals(0, $success);
 	}
 }

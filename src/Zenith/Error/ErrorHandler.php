@@ -1,8 +1,6 @@
 <?php
 namespace Zenith\Error;
 
-use Monolog\Logger;
-
 class ErrorHandler {
 	/**
 	 * Error logger
@@ -28,12 +26,64 @@ class ErrorHandler {
 	 */
 	public $exception_method = 'addCritical';
 	
-	public function __construct(Logger $logger) {
-		$this->logger = $logger;
+	/**
+	 * Logs an exception
+	 * @param \Exception $ex
+	 */
+	public function logException(\Exception $ex) {		
+		if (isset($this->logger)) {
+			$message = sprintf("%s on file %s (line %d) with message '%s'", get_class($ex), $ex->getFile(), $ex->getLine(), $ex->getMessage());
+			call_user_func(array($this->logger, $this->exception_method), $message);
+			return;
+		}
 	}
 	
 	/**
-	 * Error handler
+	 * Logs an error
+	 * @param int $errno
+	 * @param string $errstr
+	 * @param string $errfile
+	 * @param int $errline
+	 * @param array $errcontext
+	 */
+	public function logError($errno, $errstr, $errfile, $errline, $errcontext) {		
+		if (isset($this->logger)) {
+			$message = sprintf("%s on file %s (line %d)", $errstr, $errfile, $errline);
+			$log_method = array_key_exists($errno, $this->error_methods) ? $this->error_methods[$errno] : 'addError';
+			call_user_func(array($this->logger, $method), $errstr, $errcontext);
+		}
+	}
+
+	/**
+	 * Determines if a given error type will halt the application
+	 * @param int $errno
+	 * @return boolean
+	 */
+	protected function error_wont_halt($errno) {
+		$flags = E_NOTICE | E_WARNING | E_CORE_WARNING | E_COMPILE_WARNING | E_USER_WARNING |
+		E_USER_NOTICE | E_STRICT | E_DEPRECATED | E_USER_DEPRECATED;
+	
+		return $errno & $flags;
+	}
+	
+	/**
+	 * Sends a custom soap fault to output
+	 * @param string $message
+	 */
+	protected function send_custom_fault($message) {
+		//build fault content
+		$fault = <<<XML
+<?xml version="1.0" encoding="UTF-8"?>
+<SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/"><SOAP-ENV:Body><SOAP-ENV:Fault><faultcode>Server</faultcode><faultstring>$message</faultstring></SOAP-ENV:Fault></SOAP-ENV:Body></SOAP-ENV:Envelope>
+XML;
+		//send headers
+		header('HTTP/1.1 500 Internal Service Error');
+		header('Content-Type: text/xml; charset=utf-8');
+		echo $fault;
+	}
+	
+	/**
+	 * Error handling method
 	 * @param int $errno
 	 * @param string $errstr
 	 * @param string $errfile
@@ -41,17 +91,27 @@ class ErrorHandler {
 	 * @param array $errcontext
 	 */
 	public function error_handler($errno, $errstr, $errfile, $errline, $errcontext) {
-		$method = array_key_exists($errno, $this->error_methods) ? $this->error_methods[$errno] : 'addError';
-		$errstr = sprintf("%s on file %s (line %d)", $errstr, $errfile, $errline);
-		call_user_func(array($this->logger, $method), $errstr, $errcontext);
+		//log error data
+		$this->logError($errno, $errstr, $errfile, $errline, $errcontext);
+		
+		//if the error will halt the application a custom soap fault is builded
+		if (!$this->error_wont_halt($errno) && php_sapi_name() != 'cli') {
+			$this->send_custom_fault($errstr);
+		}
+		
+		return isset($this->logger);
 	}
 	
 	/**
-	 * (Non-catched) Exception handler
+	 * (Non-catched) Exception handler method
 	 * @param \Exception $ex
 	 */
 	public function exception_handler(\Exception $ex) {
-		call_user_func(array($this->logger, $this->exception_method), $ex->getMessage());
+		$this->logException($ex);
+		
+		if (php_sapi_name() != 'cli') {
+			$this->send_custom_fault($ex->getMessage());
+		}
 	}
 	
 	/**
@@ -62,8 +122,11 @@ class ErrorHandler {
 			return;
 		}
 	
-		$method = array_key_exists($err['type'], $this->error_methods) ? $this->error_methods['type'] : 'addCritical';
-		$errstr = sprintf("%s on file %s (line %d)", $err['message'], $err['file'], $err['line']);
-		call_user_func(array($this->logger, $method), $errstr);
+		//log error
+		$this->logError($err['type'], $err['message'], $err['file'], $err['line'], null);
+		
+		if (!$this->error_wont_halt($err['type']) && php_sapi_name() != 'cli') {
+			$this->send_custom_fault($err['message']);
+		}
 	}
 }

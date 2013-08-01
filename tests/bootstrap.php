@@ -23,5 +23,4 @@ $app->paths = $paths;
 /**
  * Add autoload folders
  */
-$loader->add('', Zenith\Application::getInstance()->path('services'));
 $loader->add('', Zenith\Application::getInstance()->path('components'));

@@ -19,11 +19,6 @@ return array(
 			 'config' => 'tests/Zenith/app/config/',
 		
 			 /**
-			  * Services directory
-			  */
-			 'services' => 'tests/Zenith/app/services/',
-		
-			 /**
 			  * Components directory
 			  */
 			 'components' => 'tests/Zenith/app/components/',

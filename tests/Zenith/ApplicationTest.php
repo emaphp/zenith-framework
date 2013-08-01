@@ -32,10 +32,8 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase {
 		$this->assertTrue(is_array($config));
 		$this->assertArrayHasKey('dispatcher', $config);
 		$this->assertEquals('Zenith\SOAP\Dispatcher', $config['dispatcher']);
-		$this->assertArrayHasKey('inject', $config);
-		$this->assertTrue(is_array($config['inject']));
-		$this->assertArrayHasKey('logger', $config['inject']);
-		$this->assertEquals('Zenith\Log\ProductionLogger', $config['inject']['logger']);
+		$this->assertArrayHasKey('logger', $config);
+		$this->assertEquals('Zenith\Log\ProductionLogger', $config['logger']);
 		$app->clear_config('app');
 	}
 	
@@ -50,10 +48,8 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase {
 		$this->assertTrue(is_array($config));
 		$this->assertArrayHasKey('dispatcher', $config);
 		$this->assertEquals('Zenith\SOAP\Dispatcher', $config['dispatcher']);
-		$this->assertArrayHasKey('inject', $config);
-		$this->assertTrue(is_array($config['inject']));
-		$this->assertArrayHasKey('logger', $config['inject']);
-		$this->assertEquals('Zenith\Log\DevelopmentLogger', $config['inject']['logger']);
+		$this->assertArrayHasKey('logger', $config);
+		$this->assertEquals('Zenith\Log\DevelopmentLogger', $config['logger']);
 		$app->clear_config('app');
 	}
 }

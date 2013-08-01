@@ -1,4 +1,4 @@
 <?php
 return array(
-		'inject' => array('logger' => 'Zenith\Log\ProductionLogger')
+		'logger' => 'Zenith\Log\ProductionLogger'
 );

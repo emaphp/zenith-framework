@@ -64,7 +64,7 @@ class CreateServiceCommand extends BleachCommand {
 		if (!empty($route)) {
 			//generate namespace
 			$namespace = implode('\\', $route);
-			$path = Application::getInstance()->path('services', implode(DIRECTORY_SEPARATOR, $route));
+			$path = Application::getInstance()->path('components', implode(DIRECTORY_SEPARATOR, $route));
 			
 			if (!$this->fs->exists($path)) {
 				try {
@@ -78,7 +78,7 @@ class CreateServiceCommand extends BleachCommand {
 		}
 		else {
 			$namespace = null;
-			$path = Application::getInstance()->path('services');
+			$path = Application::getInstance()->path('components');
 		}
 		
 		//build script

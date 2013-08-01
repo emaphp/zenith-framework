@@ -19,7 +19,7 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 		$this->validation_regex = CreateServiceCommand::$validation_regex;
 		
 		//build routes to services drectory
-		$this->class_dir = Application::getInstance()->path('services', $this->test_dir);
+		$this->class_dir = Application::getInstance()->path('components', $this->test_dir);
 		$this->class_file = Application::getInstance()->build_path($this->class_dir, 'Sales.php');
 		
 		//build wsdl path
@@ -40,7 +40,7 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 			$explode = explode(DIRECTORY_SEPARATOR, $this->test_dir);
 			
 			for ($i = 0, $n = count($explode); $i < $n; $i++) {
-				$class_dir = Application::getInstance()->path('services', implode(DIRECTORY_SEPARATOR, array_slice($explode, 0, $n - $i)));
+				$class_dir = Application::getInstance()->path('components', implode(DIRECTORY_SEPARATOR, array_slice($explode, 0, $n - $i)));
 				rmdir($class_dir);
 			}
 		}
