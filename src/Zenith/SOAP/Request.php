@@ -10,8 +10,22 @@ class Request {
 	const AS_SIMPLEXML = 2;
 	const AS_DOM = 3;
 	
+	/**
+	 * Service section
+	 * @var \stdClass
+	 */
 	protected $service;
+	
+	/**
+	 * Configuration section
+	 * @var unknown
+	 */
 	protected $configuration = array();
+	
+	/**
+	 * Request parameter
+	 * @var string
+	 */
 	protected $parameter;
 	
 	public function __construct($service, $configuration, $parameter) {
@@ -37,24 +51,51 @@ class Request {
 		return $this->configuration;
 	}
 	
+	/**
+	 * Obtains parameter in the requested form
+	 * @param int $as
+	 * @return SimpleXMLElement|\DOMDocument|string
+	 */
 	public function getParameter($as = self::AS_RAW) {
-		if (isset($this->parameter->any)) {
-			if ($as == self::AS_XML) {
-				return $this->parameter->any;
+		//check if parameter is a simple string
+		if (is_array($this->parameter->any) && array_key_exists('text', $this->parameter->any)) {
+			return $this->parameter->any['text'];
+		}
+		elseif ($as == self::AS_XML) {
+			return $this->parameter->any;
+		}
+		elseif ($as == self::AS_SIMPLEXML) {
+			//convert to SimpleXMLElement
+			$success = simplexml_load_string($this->parameter->any);
+				
+			if ($success === false) {
+				$error = libxml_get_last_error();
+				throw new \RuntimeException("XML Syntax error: " . $error->message);
 			}
-			elseif ($as == self::AS_SIMPLEXML) {
-				return simplexml_load_string($this->parameter->any);
+				
+			return $success;
+		}
+		elseif ($as == self::AS_DOM) {
+			//convert to DOMDocument
+			$dom = new \DOMDocument();
+				
+			if (!$dom->loadXML($this->parameter->any)) {
+				$error = libxml_get_last_error();
+				throw new \RuntimeException("XML Syntax error: " . $error->message);
 			}
-			elseif ($as == self::AS_DOM) {
-				$dom = new \DOMDocument();
-				$dom->loadXML($this->parameter->any);
-				return $dom;
-			}
+				
+			return $dom;
 		}
 		
 		return $this->parameter;
 	}
 	
+	/**
+	 * Sets a request option
+	 * @param string $name
+	 * @param string $value
+	 * @return NULL|\Zenith\SOAP\mixed
+	 */
 	public function option($name, $value = null) {
 		if (is_null($value)) {
 			if (!array_key_exists($name, $this->configuration)) {
