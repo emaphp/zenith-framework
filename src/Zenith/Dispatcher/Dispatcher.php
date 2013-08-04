@@ -1,5 +1,5 @@
 <?php
-namespace Zenith\Dispatcher\SOAP;
+namespace Zenith\Dispatcher;
 
 use Zenith\Application;
 use Zenith\SOAP\Request;
@@ -38,11 +38,16 @@ class Dispatcher {
 		}
 		
 		//obtain parameter
-		if (is_array($parameter->any) && array_key_exists('text', $parameter->any)) {
-			$request->setParameter($parameter->any['text']);
+		if (isset($parameter->any)) {
+			if (is_array($parameter->any) && array_key_exists('text', $parameter->any)) {
+				$request->setParameter($parameter->any['text']);
+			}
+			else {
+				$request->setParameter($parameter->any);
+			}
 		}
 		else {
-			$request->setParameter($parameter->any);
+			$request->setParameter(null);
 		}
 		
 		$request->setRawParameter($parameter);
@@ -102,7 +107,10 @@ class Dispatcher {
 			//obtain status code and message from exception
 			$response->setStatus($se->getStatusCode(), $se->getStatusMessage());
 			//build generated response
-			return $response->build();
+			$resp = array('service' => $response->getService(),
+						  'status' => $response->getStatus(),
+						  'result' => array('any' => $response->getResult()));
+			return $resp;
 		}
 		catch (\SoapFault $sf) {
 			//log exception
