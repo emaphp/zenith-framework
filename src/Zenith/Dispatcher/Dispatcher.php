@@ -21,7 +21,7 @@ class Dispatcher {
 		Application::getInstance()->error_handler->safe_mode = false;
 		
 		//build request
-		$request = new Request($service, $configuration, $parameter);
+		$request = new Request();
 		
 		//set service section
 		$request->setService($service->class, $service->method);
@@ -40,9 +40,11 @@ class Dispatcher {
 		//obtain parameter
 		if (isset($parameter->any)) {
 			if (is_array($parameter->any) && array_key_exists('text', $parameter->any)) {
+				//text only parameter
 				$request->setParameter($parameter->any['text']);
 			}
 			else {
+				//XML parameter
 				$request->setParameter($parameter->any);
 			}
 		}
