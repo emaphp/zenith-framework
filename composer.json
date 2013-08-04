@@ -17,7 +17,8 @@
         "twig/twig": "1.13.*",
         "injector/injector": "1.1.*",
         "symfony/console": "2.3.*",
-        "symfony/filesystem": "2.3.*"
+        "symfony/filesystem": "2.3.*",
+        "zenith/soap": "dev-master"
     },
     "autoload": {
 		"psr-0": {"Zenith": "src/"}

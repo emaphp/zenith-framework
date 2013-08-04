@@ -1,5 +1,5 @@
 <?php
-namespace Zenith\SOAP;
+namespace Zenith\Dispatcher\SOAP;
 
 use Zenith\Application;
 use Zenith\SOAP\Request;
@@ -22,6 +22,30 @@ class Dispatcher {
 		
 		//build request
 		$request = new Request($service, $configuration, $parameter);
+		
+		//set service section
+		$request->setService($service->class, $service->method);
+		
+		//set configuration
+		if (isset($configuration->option) && is_array($configuration->option)) {
+			foreach ($configuration->option as $option) {
+				$request->setOption($option->name, $option->value);
+			}
+		}
+		elseif (isset($configuration->option)) {
+			$option = $configuration->option;
+			$request->setOption($option->name, $option->value);
+		}
+		
+		//obtain parameter
+		if (is_array($parameter->any) && array_key_exists('text', $parameter->any)) {
+			$request->setParameter($parameter->any['text']);
+		}
+		else {
+			$request->setParameter($parameter->any);
+		}
+		
+		$request->setRawParameter($parameter);
 		
 		//build response
 		$response = new Response();
@@ -65,8 +89,12 @@ class Dispatcher {
 			if (!is_null($result)) {
 				$response->setResult($result);
 			}
-		
-			return $response->build();
+
+			//build response
+			$resp = array('service' => $response->getService(),
+						  'status' => $response->getStatus(),
+						  'result' => array('any' => $response->getResult()));
+			return $resp;
 		}
 		catch (ServiceException $se) {
 			//log exception
