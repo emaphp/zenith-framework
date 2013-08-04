@@ -6,7 +6,7 @@ use Zenith\WSDL\WSDLService;
 
 class MainController {
 	/**
-	 * Handles upcoming request
+	 * Handles incoming request
 	 * @throws \RuntimeException
 	 * @throws \RuntimeConfiguration
 	 */
@@ -34,34 +34,37 @@ class MainController {
 			}
 			
 			readfile($wsdl);
-			return;
 		}
-		
-		//load main configuration file
-		$config = $app->load_config('app');
-		
-		//obtain dispatcher class from config
-		if (!array_key_exists('dispatcher', $config) || !is_string($config['dispatcher']) || empty($config['dispatcher'])) {
-			throw new \RuntimeException("No dispatcher class defined!");
+		elseif (file_get_contents('php://input') == '') {
+			include $app->path('views', 'default.php');
 		}
-		
-		//call soap dispatcher
-		$dispatcher = new $config['dispatcher'];
-		
-		//load server config
-		$server_config = $app->load_config('server');
-		
-		if (is_null($server_config)) {
-			throw new \RuntimeConfiguration("No server configuration found!");
+		else {
+			//load main configuration file
+			$config = $app->load_config('app');
+			
+			//obtain dispatcher class from config
+			if (!array_key_exists('dispatcher', $config) || !is_string($config['dispatcher']) || empty($config['dispatcher'])) {
+				throw new \RuntimeException("No dispatcher class defined!");
+			}
+			
+			//call soap dispatcher
+			$dispatcher = new $config['dispatcher'];
+			
+			//load server config
+			$server_config = $app->load_config('server');
+			
+			if (is_null($server_config)) {
+				throw new \RuntimeConfiguration("No server configuration found!");
+			}
+			
+			//get server config vars
+			$wsdl = array_key_exists('wsdl', $server_config) && is_string($server_config['wsdl']) && !empty($server_config['wsdl']) ? $server_config['wsdl'] : null;
+			$options = array_key_exists('options', $server_config) && is_array($server_config['options']) ? $server_config['options'] : array();
+			
+			//initialize soap server
+			$server = new \SoapServer($app->path('wsdl', $wsdl), $options);
+			$server->setObject($dispatcher);
+			$server->handle();
 		}
-		
-		//get server config vars
-		$wsdl = array_key_exists('wsdl', $server_config) && is_string($server_config['wsdl']) && !empty($server_config['wsdl']) ? $server_config['wsdl'] : null;
-		$options = array_key_exists('options', $server_config) && is_array($server_config['options']) ? $server_config['options'] : array();
-		
-		//initialize soap server
-		$server = new \SoapServer($app->path('wsdl', $wsdl), $options);
-		$server->setObject($dispatcher);
-		$server->handle();
 	}
 }
