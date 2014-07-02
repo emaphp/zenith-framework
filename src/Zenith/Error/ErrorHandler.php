@@ -3,34 +3,64 @@ namespace Zenith\Error;
 
 class ErrorHandler {
 	/**
+	 * Application environment
+	 * @var string
+	 * @inject.service environment
+	 */
+	protected $environment;
+	
+	/**
 	 * Error logger
 	 * @var Monolog\Logger
+	 * @inject.service logger
 	 */
-	public $logger;
+	protected $logger;
 	
 	/**
 	 * Logger methods for runtime errors
 	 * @var array
 	 */
-	public $error_methods = array(E_ERROR => 'addError', E_WARNING => 'addWarning', E_NOTICE => 'addNotice',
-			E_CORE_ERROR => 'addError', E_CORE_WARNING => 'addWarning',
-			E_USER_ERROR => 'addError', E_USER_WARNING => 'addWarning', E_USER_NOTICE => 'addNotice', E_USER_DEPRECATED => 'addNotice',
-			E_STRICT => 'addNotice',
-			E_RECOVERABLE_ERROR => 'addError',
-			E_DEPRECATED => 'addNotice',
-			E_USER_DEPRECATED => 'addNotice');
+	protected $error_methods = [
+		E_ERROR => 'addError',
+		E_WARNING => 'addWarning',
+		E_NOTICE => 'addNotice',
+		E_CORE_ERROR => 'addError',
+		E_CORE_WARNING => 'addWarning',
+		E_USER_ERROR => 'addError',
+		E_USER_WARNING => 'addWarning',
+		E_USER_NOTICE => 'addNotice',
+		E_USER_DEPRECATED => 'addNotice',
+		E_STRICT => 'addNotice',
+		E_RECOVERABLE_ERROR => 'addError',
+		E_DEPRECATED => 'addNotice',
+		E_USER_DEPRECATED => 'addNotice'
+	];
 	
 	/**
 	 * Logger method for exceptions
 	 * @var string
 	 */
-	public $exception_method = 'addCritical';
+	protected $exception_method = 'addCritical';
 	
 	/**
 	 * When true, a custom soap fault will be generated in case a critical error is thrown
 	 * @var bool
 	 */
-	public $safe_mode = true;
+	protected $safe_mode = true;
+	
+	/**
+	 * Sets/Obtains if the current instance is working in 'safe' mode
+	 * @param boolean $safe_mode
+	 * @return boolean
+	 */
+	public function safeMode($safe_mode = null) {
+		if (is_null($safe_mode)) {
+			return $this->safe_mode;
+		}
+		
+		$this->safe_mode = $safe_mode;
+		return $this->safe_mode;
+	}
 	
 	/**
 	 * Logs an exception

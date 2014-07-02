@@ -9,20 +9,25 @@ class View {
 	 * Template engines
 	 * @var array
 	 */
-	public $engines;
+	protected $engines;
 	
 	/**
 	 * Supported extension (extension => engine)
 	 * @var array
 	 */
-	public $extensions = array('php' => 'default', 'twig' => 'twig');
+	protected $extensions = [
+		'php' => 'default',
+		'twig' => 'twig'
+	];
 	
 	public function __construct($twig_config) {
 		$views_dir = Application::getInstance()->path('views');
 				
 		//template engines
-		$this->engines = array('default' => new PHPEngine($views_dir),
-							   'twig'    => new \Twig_Environment(new \Twig_Loader_Filesystem($views_dir), $twig_config));
+		$this->engines = [
+			'default' => new PHPEngine($views_dir),
+			'twig'    => new \Twig_Environment(new \Twig_Loader_Filesystem($views_dir), $twig_config)
+		];
 	}
 	
 	/**

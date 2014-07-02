@@ -1,11 +1,17 @@
 <?php
 namespace Acme\Company;
 
-use Zenith\Service;
+use Zenith\SOAPService;
 use Zenith\SOAP\Request;
 use Zenith\SOAP\Response;
 
-class Sales extends Service {
+/**
+ * Dependencies (add more providers to inject object properties):
+ *
+ * @inject.provider Zenith\IoC\Provider\ViewServiceProvider
+ * @inject.provider Zenith\IoC\Provider\LoggerServiceProvider
+ */
+class Sales extends SOAPService {
 	public function getTotal(Request $request, Response $response) {
 	}
 

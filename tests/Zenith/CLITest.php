@@ -1,11 +1,15 @@
 <?php
 /**
  * Tests the WSDL and service generation
+ * @group command
  * Author: Emmanuel Antico
  */
 use Zenith\CLI\Command\CreateServiceCommand;
 use Zenith\CLI\Command\GenerateWSDLCommand;
 use Zenith\Application;
+use Injector\Injector;
+use Zenith\IoC\Provider\ViewServiceProvider;
+use Zenith\IoC\Provider\FilesystemServiceProvider;
 
 class CLITest extends \PHPUnit_Framework_TestCase {
 	//directory to create in services folder
@@ -19,7 +23,7 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 		$this->validation_regex = CreateServiceCommand::$validation_regex;
 		
 		//build routes to services drectory
-		$this->class_dir = Application::getInstance()->path('components', $this->test_dir);
+		$this->class_dir = Application::getInstance()->path('services', $this->test_dir);
 		$this->class_file = Application::getInstance()->build_path($this->class_dir, 'Sales.php');
 		
 		//build wsdl path
@@ -40,22 +44,21 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 			$explode = explode(DIRECTORY_SEPARATOR, $this->test_dir);
 			
 			for ($i = 0, $n = count($explode); $i < $n; $i++) {
-				$class_dir = Application::getInstance()->path('components', implode(DIRECTORY_SEPARATOR, array_slice($explode, 0, $n - $i)));
+				$class_dir = Application::getInstance()->path('services', implode(DIRECTORY_SEPARATOR, array_slice($explode, 0, $n - $i)));
 				rmdir($class_dir);
 			}
 		}
 	}
 	
 	public function testGenerateWSDL() {
-		$command = new GenerateWSDLCommand();
-		$container = $command->container;
-		$c = new $container();
-		$c->configure();
+		$container = new Pimple\Container;
+		$provider = new ViewServiceProvider();
+		$provider->register($container);
 		
 		$wsdl_config = Application::getInstance()->load_config('wsdl');
 		$template = $wsdl_config['template'];
 		$params = $wsdl_config['args'];
-		$wsdl = $c['view']->render($template, $params);
+		$wsdl = $container['view']->render($template, $params);
 		$content = file_get_contents(__DIR__ . '/assert/application-wsdl');
 		$this->assertEquals($content, $wsdl);
 		
@@ -65,46 +68,45 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 	}
 	
 	public function testMakeService1() {
-		$command = new CreateServiceCommand();
-		$container = $command->container;
-		$c = new $container();
-		$c->configure();
-		$service = $c['view']->render('command/service', array('namespace' => null, 'classname' => 'TestService', 'methods' => null));
+		$container = new Pimple\Container;
+		$provider = new ViewServiceProvider();
+		$provider->register($container);
+		
+		$service = $container['view']->render('command/service', ['namespace' => null, 'classname' => 'TestService', 'methods' => null]);
 		$content = file_get_contents(__DIR__ . '/assert/TestService');
 		$this->assertEquals($content, $service);
 	}
 	
 	public function testMakeService2() {
-		$command = new CreateServiceCommand();
-		$container = $command->container;
-		$c = new $container();
-		$c->configure();
-		$service = $c['view']->render('command/service', array('namespace' => 'Greetings', 'classname' => 'HelloWorld', 'methods' => array('helloWorld')));
+		$container = new Pimple\Container;
+		$provider = new ViewServiceProvider();
+		$provider->register($container);
+		$service = $container['view']->render('command/service', ['namespace' => 'Greetings', 'classname' => 'HelloWorld', 'methods' => ['helloWorld']]);
 		$content = file_get_contents(__DIR__ . '/assert/HelloWorld');
 		$this->assertEquals($content, $service);
 	}
 	
 	public function testMakeService3() {
-		$command = new CreateServiceCommand();
-		$container = $command->container;
-		$c = new $container();
-		$c->configure();
-		$service = $c['view']->render('command/service', array('namespace' => 'Acme\Company', 'classname' => 'Sales', 'methods' => array('getTotal', 'getItem')));
+		$container = new Pimple\Container;
+		$provider = new ViewServiceProvider();
+		$provider->register($container);
+		$service = $container['view']->render('command/service', ['namespace' => 'Acme\Company', 'classname' => 'Sales', 'methods' => ['getTotal', 'getItem']]);
 		$content = file_get_contents(__DIR__ . '/assert/Sales');
 		$this->assertEquals($content, $service);
 	}
 	
 	public function testWriteService() {
-		$command = new CreateServiceCommand();
-		$container = $command->container;
-		$c = new $container();
-		$c->configure();
+		$container = new Pimple\Container;
+		$viewProvider = new ViewServiceProvider();
+		$fsProvider = new FilesystemServiceProvider();
+		$viewProvider->register($container);
+		$fsProvider->register($container);
 		
 		//create directory
-		$c['fs']->mkdir($this->class_dir);
+		$container['fs']->mkdir($this->class_dir);
 		
 		//write service
-		$service = $c['view']->render('command/service', array('namespace' => 'Acme\Company', 'classname' => 'Sales', 'methods' => array('getTotal', 'getItem')));
+		$service = $container['view']->render('command/service', ['namespace' => 'Acme\Company', 'classname' => 'Sales', 'methods' => ['getTotal', 'getItem']]);
 		$success = file_put_contents($this->class_file, $service);
 		$this->assertTrue(is_int($success));
 	}

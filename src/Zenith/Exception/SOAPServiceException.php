@@ -1,7 +1,7 @@
 <?php
 namespace Zenith\Exception;
 
-class ServiceException extends \Exception {
+class SOAPServiceException extends \Exception {
 	/**
 	 * Status code
 	 * @var int

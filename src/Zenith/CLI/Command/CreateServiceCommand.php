@@ -1,19 +1,18 @@
 <?php
 namespace Zenith\CLI\Command;
 
-use Zenith\CLI\Command\BleachCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
-use Zenith\Application;
 use Symfony\Component\Filesystem\Exception\IOException;
+use Zenith\Application;
 
 class CreateServiceCommand extends BleachCommand {
 	public static $validation_regex = '/^[A-z|_]{1}[\w]*$/';
 	
 	protected function configure() {
-		$this->setName('create-service')
+		$this->setName('service-create')
 		->setDescription("Generates a new service")
 		->addArgument('class', InputArgument::REQUIRED)
 		->addArgument('methods', InputArgument::IS_ARRAY)
@@ -64,7 +63,7 @@ class CreateServiceCommand extends BleachCommand {
 		if (!empty($route)) {
 			//generate namespace
 			$namespace = implode('\\', $route);
-			$path = Application::getInstance()->path('components', implode(DIRECTORY_SEPARATOR, $route));
+			$path = Application::getInstance()->path('services', implode(DIRECTORY_SEPARATOR, $route));
 			
 			if (!$this->fs->exists($path)) {
 				try {
@@ -78,11 +77,11 @@ class CreateServiceCommand extends BleachCommand {
 		}
 		else {
 			$namespace = null;
-			$path = Application::getInstance()->path('components');
+			$path = Application::getInstance()->path('services');
 		}
 		
 		//build script
-		$script = $this->view->render('command/service', array('namespace' => $namespace, 'classname' => $classname, 'methods' => $methods));
+		$script = $this->view->render('command/service', ['namespace' => $namespace, 'classname' => $classname, 'methods' => $methods]);
 		$filename = Application::getInstance()->build_path($path, "$classname.php");
 		
 		//check if file already exists

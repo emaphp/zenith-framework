@@ -2,7 +2,6 @@
 namespace Zenith\CLI\Command;
 
 use Zenith\Application;
-use Zenith\CLI\Command\BleachCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -12,7 +11,7 @@ use Symfony\Component\Filesystem\Exception\IOException;
 class GenerateWSDLCommand extends BleachCommand {
 	protected function configure() {
 		//add command properties
-		$this->setName('generate-wsdl')
+		$this->setName('wsdl-create')
 		->setDescription("Generates and stores the application WSDL")
 		->addArgument('path', InputArgument::OPTIONAL)
 		->addOption('output', null, InputOption::VALUE_NONE, 'If set, the generated WSDL will be printed to console')

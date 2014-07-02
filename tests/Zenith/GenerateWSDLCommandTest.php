@@ -1,11 +1,13 @@
 <?php
 /**
  * Tests the GenerateWSDLCommand class
+ * @group command
  * Author: Emmanuel Antico;
  */
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Zenith\CLI\Command\GenerateWSDLCommand;
+use Injector\Injector;
 
 class GenerateWSDLCommandTest extends \PHPUnit_Framework_TestCase {
 	protected $application;
@@ -16,20 +18,21 @@ class GenerateWSDLCommandTest extends \PHPUnit_Framework_TestCase {
 		if (is_null($this->environment)) {
 			$app = \Zenith\Application::getInstance();
 			$app->clear_config();
-			$this->environment = $app->environment;
+			$this->environment = $app->getEnvironment();
 		}
 		
 		//generate cli application
 		$this->application = new Application();
-		$cmd = new GenerateWSDLCommand();
-		$cmd->__setup();
+		$cmd = Injector::create('Zenith\CLI\Command\GenerateWSDLCommand');
 		$this->application->add($cmd);
 	}
 	
 	public function tearDown() {
 		$app = \Zenith\Application::getInstance();
 		$app->clear_config();
-		$app->environment = 'development';
+		$container = new \Pimple\Container;
+		$container['environment'] = 'development';
+		Injector::inject($app, $container);
 		$config = $app->load_config('server');
 		
 		if (is_array($config) && array_key_exists('wsdl', $config) && file_exists($app->path('wsdl', $config['wsdl']))) {
@@ -37,18 +40,22 @@ class GenerateWSDLCommandTest extends \PHPUnit_Framework_TestCase {
 		}
 		
 		//restore application environment
-		$app->environment = $this->environment;
+		$container = new \Pimple\Container;
+		$container['environment'] = $this->environment;
+		Injector::inject($app, $container);
 	}
 	
 	public function testNoPath() {
 		//start application with custom environment
 		$app = \Zenith\Application::getInstance();
 		$app->clear_config();
-		$app->environment = 'cli_test';
+		$container = new \Pimple\Container;
+		$container['environment'] = 'cli_test';
+		Injector::inject($app, $container);
 		
-		$command = $this->application->find('generate-wsdl');
+		$command = $this->application->find('wsdl-create');
 		$commandTester = new CommandTester($command);
-		$success = $commandTester->execute(array('command' => $command->getName()));
+		$success = $commandTester->execute(['command' => $command->getName()]);
 
 		$this->assertRegExp('/No target path specified in \'server\' configuration file. Generated WSDL will not be stored/', $commandTester->getDisplay());
 		$this->assertEquals(0, $success);
@@ -58,11 +65,13 @@ class GenerateWSDLCommandTest extends \PHPUnit_Framework_TestCase {
 		//start application
 		$app = \Zenith\Application::getInstance();
 		$app->clear_config();
-		$app->environment = 'development';
+		$container = new \Pimple\Container;
+		$container['environment'] = 'development';
+		Injector::inject($app, $container);
 		
-		$command = $this->application->find('generate-wsdl');
+		$command = $this->application->find('wsdl-create');
 		$commandTester = new CommandTester($command);
-		$success = $commandTester->execute(array('command' => $command->getName(), '--force'));
+		$success = $commandTester->execute(['command' => $command->getName(), '--force']);
 		
 		$config = $app->load_config('server');
 		$this->assertTrue(is_array($config));

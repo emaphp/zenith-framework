@@ -9,11 +9,17 @@ use Zenith\SOAP\Request;
 use Zenith\SOAP\Response;
 {% endif %}
 
+/**
+ * Dependencies (add more providers to inject object properties):
+ *
+ * @inject.provider Zenith\IoC\Provider\ViewServiceProvider
+ * @inject.provider Zenith\IoC\Provider\LoggerServiceProvider
+ */
 class {{ classname }} extends Service {
 {% if methods %}
 {% if methods|length > 1 %}{% set spacer = "\n\t" %}{% else %}{% set spacer = "" %}{% endif %}
-	{% for i, method in methods %}public function {{ method }}(Request $request, Response $response) {
-	}
+    {% for i, method in methods %}public function {{ method }}(Request $request, Response $response) {
+    }
 {% if i != methods|length - 1 %}{{ spacer }}{% endif %}{% endfor %}
 {% endif %}}
 ?>

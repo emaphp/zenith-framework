@@ -1,24 +1,34 @@
 <?php
 namespace Zenith;
 
+use Zenith\Error\ErrorHandler;
+
 class Application {
 	/**
 	 * Application configuration
 	 * @var array
 	 */
-	public $config = array();
+	protected $config = array();
 	
 	/**
 	 * Application environment
 	 * @var string
+	 * @inject.service environment
 	 */
-	public $environment;
+	protected $environment;
 	
 	/**
 	 * Application paths
 	 * @var array
+	 * @inject.service paths
 	 */
-	public $paths;
+	protected $paths;
+	
+	/**
+	 * Error handler
+	 * @var Zenith\Error\ErrorHandler
+	 */
+	protected $errorHandler;
 	
 	/**
 	 * Class instance
@@ -41,6 +51,38 @@ class Application {
 		return self::$instance;
 	}
 
+	/**
+	 * Returns current application environment
+	 * @return string
+	 */
+	public function getEnvironment() {
+		return $this->environment;
+	}
+	
+	/**
+	 * Obtains current application paths
+	 * @return array
+	 */
+	public function getPaths() {
+		return $this->paths;
+	}
+	
+	/**
+	 * Obtains current error handler
+	 * @return Zenith\Error\ErrorHandler
+	 */
+	public function getErrorHandler() {
+		return $this->errorHandler;
+	}
+	
+	/**
+	 * Set current application error handler
+	 * @param Zenith\Error\ErrorHandler $errorHandler
+	 */
+	public function setErrorHandler(ErrorHandler $errorHandler) {
+		$this->errorHandler = $errorHandler;
+	}
+	
 	/**
 	 * Clears all configuration values associated to a configuration filename
 	 * If no name is specified then all values are deleted

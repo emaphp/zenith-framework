@@ -18,9 +18,14 @@ $paths = require __DIR__ . '/Zenith/bootstrap/paths.php';
  * Setup application paths
  */
 $app = Zenith\Application::getInstance();
-$app->paths = $paths;
+
+$container = new Pimple\Container;
+$container['environment'] = 'testing';
+$container['paths'] = $paths;
+Injector\Injector::inject($app, $container);
 
 /**
  * Add autoload folders
  */
+$loader->add('', Zenith\Application::getInstance()->path('services'));
 $loader->add('', Zenith\Application::getInstance()->path('components'));

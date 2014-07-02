@@ -2,7 +2,6 @@
 namespace Zenith;
 
 use Zenith\Application;
-use Zenith\WSDL\WSDLService;
 
 class MainController {
 	/**
@@ -11,7 +10,7 @@ class MainController {
 	 * @throws \RuntimeConfiguration
 	 */
 	public function service() {
-		//obtain configuration
+		//obtain application instance
 		$app = Application::getInstance();
 		
 		//check if request tries to obtain WSDL

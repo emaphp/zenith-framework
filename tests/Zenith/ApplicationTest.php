@@ -1,9 +1,12 @@
 <?php
 /**
  * Tests loading configuration values through the Zenith\Application class
+ * @group application
  * Author: Emmanuel Antico
  */
 use Zenith\Application;
+use Injector\Injector;
+use Monolog\Logger;
 
 class ApplicationTest extends \PHPUnit_Framework_TestCase {
 	/**
@@ -27,14 +30,18 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testLoadEnvironmentConfig() {
 		$app = Application::getInstance();
-		$config = $app->load_config('app', 'production');
 		
+		$config = $app->load_config('app', 'production');
 		$this->assertTrue(is_array($config));
 		$this->assertArrayHasKey('dispatcher', $config);
 		$this->assertEquals('Zenith\SOAP\Dispatcher', $config['dispatcher']);
-		$this->assertArrayHasKey('logger', $config);
-		$this->assertEquals('Zenith\Log\ProductionLogger', $config['logger']);
 		$app->clear_config('app');
+		
+		$config = $app->load_config('logger', 'production');
+		$this->assertTrue(is_array($config));
+		$this->assertArrayHasKey('threshold', $config);
+		$this->assertEquals(Logger::WARNING, $config['threshold']);
+		$app->clear_config('logger');
 	}
 	
 	/**
@@ -42,14 +49,20 @@ class ApplicationTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function testLoadApplicationConfig() {
 		$app = Application::getInstance();
-		$app->environment = 'development';
-		$config = $app->load_config('app');
+		$container = new Pimple\Container;
+		$container['environment'] = 'development';
+		Injector::inject($app, $container);
 		
+		$config = $app->load_config('app');
 		$this->assertTrue(is_array($config));
 		$this->assertArrayHasKey('dispatcher', $config);
 		$this->assertEquals('Zenith\SOAP\Dispatcher', $config['dispatcher']);
-		$this->assertArrayHasKey('logger', $config);
-		$this->assertEquals('Zenith\Log\DevelopmentLogger', $config['logger']);
 		$app->clear_config('app');
+		
+		$config = $app->load_config('logger');
+		$this->assertTrue(is_array($config));
+		$this->assertArrayHasKey('threshold', $config);
+		$this->assertEquals(Logger::DEBUG, $config['threshold']);
+		$app->clear_config('logger');
 	}
 }

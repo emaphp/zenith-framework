@@ -1,11 +1,17 @@
 <?php
 namespace Greetings;
 
-use Zenith\Service;
+use Zenith\SOAPService;
 use Zenith\SOAP\Request;
 use Zenith\SOAP\Response;
 
-class HelloWorld extends Service {
+/**
+ * Dependencies (add more providers to inject object properties):
+ *
+ * @inject.provider Zenith\IoC\Provider\ViewServiceProvider
+ * @inject.provider Zenith\IoC\Provider\LoggerServiceProvider
+ */
+class HelloWorld extends SOAPService {
 	public function helloWorld(Request $request, Response $response) {
 	}
 }

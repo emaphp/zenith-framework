@@ -1,7 +1,13 @@
 <?php
 
-use Zenith\Service;
+use Zenith\SOAPService;
 
-class TestService extends Service {
+/**
+ * Dependencies (add more providers to inject object properties):
+ *
+ * @inject.provider Zenith\IoC\Provider\ViewServiceProvider
+ * @inject.provider Zenith\IoC\Provider\LoggerServiceProvider
+ */
+class TestService extends SOAPService {
 }
 ?>

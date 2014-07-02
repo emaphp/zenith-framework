@@ -32,7 +32,8 @@ class PHPEngine {
 		
 		//start buffer
 		ob_start();
-		//buidl content
+		
+		//build content
 		extract($args);
 		include $view;
 		$content = ob_get_clean();

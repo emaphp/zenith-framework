@@ -4,8 +4,9 @@ namespace Zenith\Dispatcher;
 use Zenith\Application;
 use Zenith\SOAP\Request;
 use Zenith\SOAP\Response;
-use Zenith\Service;
-use Zenith\Exception\ServiceException;
+use Zenith\SOAPService;
+use Zenith\Exception\SOAPServiceException;
+use Injector\Injector;
 
 class Dispatcher {
 	/**
@@ -18,7 +19,7 @@ class Dispatcher {
 	 */
 	public function execute($service, $configuration, $parameter) {
 		//avoid throwing custom faults
-		Application::getInstance()->error_handler->safe_mode = false;
+		Application::getInstance()->getErrorHandler()->safeMode(false);
 		
 		//build request
 		$request = new Request();
@@ -73,9 +74,9 @@ class Dispatcher {
 			}
 		
 			//create service instance
-			$serviceObj = new $class;
+			$serviceObj = Injector::create($class);
 		
-			if (!($serviceObj instanceof Service)) {
+			if (!($serviceObj instanceof SOAPService)) {
 				throw new \RuntimeException("Class '$class' is not a valid service!");
 			}
 			
@@ -83,10 +84,7 @@ class Dispatcher {
 				throw new \RuntimeException("Operation '{$method}' is not available in service '$class'!");
 			}
 		
-			//setup service
-			$serviceObj->__setup();
-				
-			//build response
+			//build (default) response
 			$response->setService($class, $method);
 			$response->setStatus(0, 'Ok');
 			
@@ -98,31 +96,37 @@ class Dispatcher {
 			}
 
 			//build response
-			$resp = array('service' => $response->getService(),
-						  'status' => $response->getStatus(),
-						  'result' => array('any' => $response->getResult()));
+			$resp = [
+				'service' => $response->getService(),
+				'status'  => $response->getStatus(),
+				'result'  => ['any' => $response->getResult()]
+			];
 			return $resp;
 		}
-		catch (ServiceException $se) {
+		catch (SOAPServiceException $se) {
 			//log exception
-			Application::getInstance()->error_handler->logException($se);
+			Application::getInstance()->getErrorHandler()->logException($se);
+			
 			//obtain status code and message from exception
 			$response->setStatus($se->getStatusCode(), $se->getStatusMessage());
+			
 			//build generated response
-			$resp = array('service' => $response->getService(),
-						  'status' => $response->getStatus(),
-						  'result' => array('any' => $response->getResult()));
+			$resp = [
+				'service' => $response->getService(),
+				'status' => $response->getStatus(),
+				'result' => ['any' => $response->getResult()]
+			];
 			return $resp;
 		}
 		catch (\SoapFault $sf) {
 			//log exception
-			Application::getInstance()->error_handler->logException($sf);
+			Application::getInstance()->getErrorHandler()->logException($sf);
 			set_exception_handler(null);
 			throw $sf;
 		}
 		catch (\Exception $e) {
 			//log exception
-			Application::getInstance()->error_handler->logException($e);
+			Application::getInstance()->getErrorHandler()->logException($e);
 			set_exception_handler(null);
 			$sf = new \SoapFault("Server", $e->getMessage());
 			throw $sf;
