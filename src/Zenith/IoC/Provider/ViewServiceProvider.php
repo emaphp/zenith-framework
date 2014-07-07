@@ -4,6 +4,7 @@ namespace Zenith\IoC\Provider;
 use Pimple\ServiceProviderInterface;
 use Pimple\Container;
 use Zenith\Application;
+use Zenith\View\View;
 
 class ViewServiceProvider implements ServiceProviderInterface {
 	public function register(Container $container) {

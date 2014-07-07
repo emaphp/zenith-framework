@@ -3,6 +3,8 @@
  * Service property injection test
  * @group service
  */
+use Injector\Injector;
+
 class ServiceTest extends PHPUnit_Framework_TestCase {
 	protected $service;
 	

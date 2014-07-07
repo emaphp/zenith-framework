@@ -12,10 +12,10 @@ use Zenith\SOAP\Response;
  * @inject.provider Zenith\IoC\Provider\LoggerServiceProvider
  */
 class Sales extends SOAPService {
-	public function getTotal(Request $request, Response $response) {
-	}
+    public function getTotal(Request $request, Response $response) {
+    }
 
-	public function getItem(Request $request, Response $response) {
-	}
+    public function getItem(Request $request, Response $response) {
+    }
 }
 ?>

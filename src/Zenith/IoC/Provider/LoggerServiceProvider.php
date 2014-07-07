@@ -15,17 +15,17 @@ class LoggerServiceProvider implements ServiceProviderInterface {
 			$config = $app->load_config('logger');
 				
 			//initialize logger instance
-			$logger = new Logger($app->environment);
+			$logger = new Logger($app->getEnvironment());
 				
-			if (array_key_exists('path', $config) && !empty($config['path'])) {
+			if (is_array($config) && array_key_exists('path', $config) && !empty($config['path'])) {
 				$log_path = $config['path'];
 			}
 			else {
 				//build default
-				$log_path = $app->path('logs', $app->environment . '_' . date('Y-m-d') . '.log');
+				$log_path = $app->path('logs', $app->getEnvironment() . '_' . date('Y-m-d') . '.log');
 			}
 			
-			if (array_key_exists('threshold', $config)) {
+			if (is_array($config) && array_key_exists('threshold', $config)) {
 				$log_threshold = intval($config['threshold']);
 			}
 			else {

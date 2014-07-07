@@ -173,7 +173,7 @@ class Application {
 	 */
 	public function path($dir, $path = null) {
 		if (!array_key_exists($dir, $this->paths)) {
-			throw new \InvalidArgumentException("No path found for '$path'!");
+			throw new \InvalidArgumentException("No path found for '$dir'");
 		}
 		
 		//build path

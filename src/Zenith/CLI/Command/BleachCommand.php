@@ -18,15 +18,15 @@ abstract class BleachCommand extends Command {
 	/**
 	 * @inject.service fs
 	 */
-	private $fs;
+	protected $fs;
 	
 	/**
 	 * @inject.service view
 	 */
-	private $view;
+	protected $view;
 	
 	/**
 	 * @inject.service logger
 	 */
-	private $logger;
+	protected $logger;
 }

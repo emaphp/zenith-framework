@@ -9,6 +9,7 @@ use Zenith\Log\ProductionLogger;
 use Zenith\Application;
 use Zenith\IoC\Provider\LoggerServiceProvider;
 use Injector\Injector;
+use Monolog\Logger;
 
 class LogTest extends \PHPUnit_Framework_TestCase {
 	protected $development_logger;
@@ -21,24 +22,28 @@ class LogTest extends \PHPUnit_Framework_TestCase {
 		
 		//set 'development' environment
 		{
-			$provider = new LoggerServiceProvider();
-			
 			$envContainer = new Pimple\Container();
 			$envContainer['environment'] = 'development';
-			Injector::inject($app, $container);
+			$app->clear_config();
+			Injector::inject($app, $envContainer);
 			
-			$this->development_logger = $provider['logger'];
+			$provider = new LoggerServiceProvider();
+			$loggerContainer = new Pimple\Container();
+			$provider->register($loggerContainer);
+			$this->development_logger = $loggerContainer['logger'];
 		}
 		
 		//set 'production' environemnt
 		{
-			$provider = new LoggerServiceProvider();
-				
 			$envContainer = new Pimple\Container();
 			$envContainer['environment'] = 'production';
-			Injector::inject($app, $container);
+			$app->clear_config();
+			Injector::inject($app, $envContainer);
 			
-			$this->production_logger = $provider['logger'];
+			$provider = new LoggerServiceProvider();
+			$loggerContainer = new Pimple\Container();
+			$provider->register($loggerContainer);
+			$this->production_logger = $loggerContainer['logger'];
 		}
 		
 		$this->development_log = Application::getInstance()->path('logs', 'development_' . date('Y-m-d') . '.log'); 
@@ -56,6 +61,13 @@ class LogTest extends \PHPUnit_Framework_TestCase {
 	}
 	
 	public function testDevelopmentLogger() {
+		$handlers = $this->development_logger->getHandlers();
+		$this->assertCount(1, $handlers);
+		$handler = current($handlers);
+		$this->assertInstanceOf('Monolog\Handler\StreamHandler', $handler);
+		$level = $handler->getLevel();
+		$this->assertEquals(Logger::DEBUG, $level);
+		
 		$this->development_logger->addDebug('Debug message');
 		$this->development_logger->addWarning('Something went wrong');
 		
@@ -65,6 +77,13 @@ class LogTest extends \PHPUnit_Framework_TestCase {
 	}
 	
 	public function testProductionLogger() {
+		$handlers = $this->production_logger->getHandlers();
+		$this->assertCount(1, $handlers);
+		$handler = current($handlers);
+		$this->assertInstanceOf('Monolog\Handler\StreamHandler', $handler);
+		$level = $handler->getLevel();
+		$this->assertEquals(Logger::WARNING, $level);
+		
 		$this->production_logger->addDebug('Debug message');
 		$this->production_logger->addWarning('Something went wrong');
 	

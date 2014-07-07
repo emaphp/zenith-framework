@@ -6,6 +6,7 @@ return [
 	'current' => getcwd(), // current working directory
 	'app' => 'tests/Zenith/app/', // application directory
 	'config' => 'tests/Zenith/app/config/', // configuration directory
+	'services' => 'tests/Zenith/app/services/', // components directory
 	'components' => 'tests/Zenith/app/components/', // components directory
 	'views' => 'tests/Zenith/app/views/', // views directory
 	'storage' => 'tests/Zenith/app/storage/', // application storage
