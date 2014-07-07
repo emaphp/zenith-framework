@@ -81,7 +81,7 @@ class CreateServiceCommand extends BleachCommand {
 		}
 		
 		//build script
-		$script = $this->view->render('command/service', ['namespace' => $namespace, 'classname' => $classname, 'methods' => $methods]);
+		$script = $this->view->render('service', ['namespace' => $namespace, 'classname' => $classname, 'methods' => $methods]);
 		$filename = Application::getInstance()->build_path($path, "$classname.php");
 		
 		//check if file already exists

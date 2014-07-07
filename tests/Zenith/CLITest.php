@@ -72,7 +72,7 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 		$provider = new ViewServiceProvider();
 		$provider->register($container);
 		
-		$service = $container['view']->render('command/service', ['namespace' => null, 'classname' => 'TestService', 'methods' => null]);
+		$service = $container['view']->render('service', ['namespace' => null, 'classname' => 'TestService', 'methods' => null]);
 		$content = file_get_contents(__DIR__ . '/assert/TestService');
 		$this->assertEquals($content, $service);
 	}
@@ -81,7 +81,7 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 		$container = new Pimple\Container;
 		$provider = new ViewServiceProvider();
 		$provider->register($container);
-		$service = $container['view']->render('command/service', ['namespace' => 'Greetings', 'classname' => 'HelloWorld', 'methods' => ['helloWorld']]);
+		$service = $container['view']->render('service', ['namespace' => 'Greetings', 'classname' => 'HelloWorld', 'methods' => ['helloWorld']]);
 		$content = file_get_contents(__DIR__ . '/assert/HelloWorld');
 		$this->assertEquals($content, $service);
 	}
@@ -90,7 +90,7 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 		$container = new Pimple\Container;
 		$provider = new ViewServiceProvider();
 		$provider->register($container);
-		$service = $container['view']->render('command/service', ['namespace' => 'Acme\Company', 'classname' => 'Sales', 'methods' => ['getTotal', 'getItem']]);
+		$service = $container['view']->render('service', ['namespace' => 'Acme\Company', 'classname' => 'Sales', 'methods' => ['getTotal', 'getItem']]);
 		$content = file_get_contents(__DIR__ . '/assert/Sales');
 		$this->assertEquals($content, $service);
 	}
@@ -106,7 +106,7 @@ class CLITest extends \PHPUnit_Framework_TestCase {
 		$container['fs']->mkdir($this->class_dir);
 		
 		//write service
-		$service = $container['view']->render('command/service', ['namespace' => 'Acme\Company', 'classname' => 'Sales', 'methods' => ['getTotal', 'getItem']]);
+		$service = $container['view']->render('service', ['namespace' => 'Acme\Company', 'classname' => 'Sales', 'methods' => ['getTotal', 'getItem']]);
 		$success = file_put_contents($this->class_file, $service);
 		$this->assertTrue(is_int($success));
 	}
