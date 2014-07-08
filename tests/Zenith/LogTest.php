@@ -4,8 +4,6 @@
  * @group logger
  * Author: Emmanuel Antico
  */
-use Zenith\Log\DevelopmentLogger;
-use Zenith\Log\ProductionLogger;
 use Zenith\Application;
 use Zenith\IoC\Provider\LoggerServiceProvider;
 use Injector\Injector;
@@ -16,6 +14,8 @@ class LogTest extends \PHPUnit_Framework_TestCase {
 	protected $development_log;
 	protected $production_logger;
 	protected $production_log;
+	protected $clitest_logger;
+	protected $clitest_log;
 	
 	public function setUp() {
 		$app = Application::getInstance();
@@ -44,6 +44,19 @@ class LogTest extends \PHPUnit_Framework_TestCase {
 			$loggerContainer = new Pimple\Container();
 			$provider->register($loggerContainer);
 			$this->production_logger = $loggerContainer['logger'];
+		}
+		
+		//set 'cli_test' environment
+		{
+			$envContainer = new Pimple\Container();
+			$envContainer['environment'] = 'cli_test';
+			$app->clear_config();
+			Injector::inject($app, $envContainer);
+			
+			$provider = new LoggerServiceProvider();
+			$loggerContainer = new Pimple\Container();
+			$provider->register($loggerContainer);
+			$this->clitest_logger = $loggerContainer['logger'];
 		}
 		
 		$this->development_log = Application::getInstance()->path('logs', 'development_' . date('Y-m-d') . '.log'); 
@@ -90,5 +103,14 @@ class LogTest extends \PHPUnit_Framework_TestCase {
 		$this->assertTrue(file_exists($this->production_log));
 		$file = file($this->production_log);
 		$this->assertEquals(1, count($file));
+	}
+	
+	public function testCliTestLogger() {
+		$handlers = $this->clitest_logger->getHandlers();
+		$this->assertCount(1, $handlers);
+		$handler = current($handlers);
+		$this->assertInstanceOf('Monolog\Handler\StreamHandler', $handler);
+		$level = $handler->getLevel();
+		$this->assertEquals(Logger::DEBUG, $level);
 	}
 }

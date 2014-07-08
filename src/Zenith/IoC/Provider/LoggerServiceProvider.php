@@ -19,6 +19,10 @@ class LoggerServiceProvider implements ServiceProviderInterface {
 				
 			if (is_array($config) && array_key_exists('path', $config) && !empty($config['path'])) {
 				$log_path = $config['path'];
+				
+				if (is_callable($log_path)) {
+					$log_path = call_user_func($log_path, $app);
+				}
 			}
 			else {
 				//build default
