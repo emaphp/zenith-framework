@@ -53,7 +53,7 @@ class MainController {
 			$server_config = $app->load_config('server');
 			
 			if (is_null($server_config)) {
-				throw new \RuntimeConfiguration("No server configuration found!");
+				throw new \RuntimeException("No server configuration found!");
 			}
 			
 			//get server config vars

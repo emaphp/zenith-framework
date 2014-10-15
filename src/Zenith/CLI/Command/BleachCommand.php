@@ -10,23 +10,23 @@ use Symfony\Component\Console\Command\Command;
  * 
  * Dependencies:
  * 
- * @inject.provider Zenith\IoC\Provider\FilesystemServiceProvider
- * @inject.provider Zenith\IoC\Provider\ViewServiceProvider
- * @inject.provider Zenith\IoC\Provider\LoggerServiceProvider
+ * @Provider Zenith\IoC\Provider\FilesystemServiceProvider
+ * @Provider Zenith\IoC\Provider\ViewServiceProvider
+ * @Provider Zenith\IoC\Provider\LoggerServiceProvider
  */
 abstract class BleachCommand extends Command {
 	/**
-	 * @inject.service fs
+	 * @Inject fs
 	 */
 	protected $fs;
 	
 	/**
-	 * @inject.service view
+	 * @Inject view
 	 */
 	protected $view;
 	
 	/**
-	 * @inject.service logger
+	 * @Inject logger
 	 */
 	protected $logger;
 }

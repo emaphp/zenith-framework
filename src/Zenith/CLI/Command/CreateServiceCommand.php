@@ -8,6 +8,9 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 use Zenith\Application;
 
+/**
+ * @ExtendInject
+ */
 class CreateServiceCommand extends BleachCommand {
 	public static $validation_regex = '/^[A-z|_]{1}[\w]*$/';
 	

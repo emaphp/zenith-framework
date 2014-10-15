@@ -7,17 +7,17 @@ namespace Zenith;
  * 
  * Dependencies:
  * 
- * @inject.provider Zenith\IoC\Provider\ViewServiceProvider
- * @inject.provider Zenith\IoC\Provider\LoggerServiceProvider
+ * @Provider Zenith\IoC\Provider\ViewServiceProvider
+ * @Provider Zenith\IoC\Provider\LoggerServiceProvider
  */
 class SOAPService {
 	/**
-	 * @inject.service view
+	 * @Inject view
 	 */
 	protected $view;
 	
 	/**
-	 * @inject.service logger
+	 * @Inject logger
 	 */
 	protected $logger;
 }

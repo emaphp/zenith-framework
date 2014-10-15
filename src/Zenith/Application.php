@@ -13,14 +13,14 @@ class Application {
 	/**
 	 * Application environment
 	 * @var string
-	 * @inject.service environment
+	 * @Inject environment
 	 */
 	protected $environment;
 	
 	/**
 	 * Application paths
 	 * @var array
-	 * @inject.service paths
+	 * @Inject paths
 	 */
 	protected $paths;
 	

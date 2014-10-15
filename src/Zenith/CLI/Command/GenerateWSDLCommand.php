@@ -8,6 +8,9 @@ use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Exception\IOException;
 
+/**
+ * @ExtendInject
+ */
 class GenerateWSDLCommand extends BleachCommand {
 	protected function configure() {
 		//add command properties

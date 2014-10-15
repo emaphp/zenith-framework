@@ -8,8 +8,8 @@ use Zenith\SOAP\Response;
 /**
  * Dependencies (add more providers to inject object properties):
  *
- * @inject.provider Zenith\IoC\Provider\ViewServiceProvider
- * @inject.provider Zenith\IoC\Provider\LoggerServiceProvider
+ * @Provider Zenith\IoC\Provider\ViewServiceProvider
+ * @Provider Zenith\IoC\Provider\LoggerServiceProvider
  */
 class HelloWorld extends SOAPService {
     public function helloWorld(Request $request, Response $response) {
